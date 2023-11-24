@@ -1,5 +1,6 @@
 package team.delete.scheduling_system.controller;
 
+import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -32,6 +33,13 @@ public class UserController {
     @PostMapping("/login")
     public Object login(@RequestBody Map<String, String> map) {
         userService.login(map.get("username"), map.get("password"));
+        return AjaxResult.SUCCESS();
+    }
+
+    @ResponseBody
+    @PostMapping("/change_password")
+    public Object changePassword(@RequestBody Map<String, String> map) {
+        userService.changePassword(StpUtil.getLoginIdAsInt(), map.get("old_password"), map.get("new_password"));
         return AjaxResult.SUCCESS();
     }
 
