@@ -46,6 +46,7 @@ public class UserService {
 
     public void changePassword(Integer userId, String oldPassword, String newPassword) {
         if (userId == null || oldPassword == null || newPassword == null) {
+            System.out.println("---" + userId + "---" + oldPassword + "---" + newPassword);
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         if (!Pattern.matches(RegexPattern.PASSWORD, newPassword)) {
@@ -60,8 +61,7 @@ public class UserService {
         if (!user.getPassword().equals(oldPassword)) {
             throw new AppException(ErrorCode.PASSWORD_ERROR);
         }
-        UpdateWrapper<User> updateWrapper = new UpdateWrapper<>();
-        updateWrapper.eq("user_id", userId);
-        updateWrapper.set("password", newPassword);
+        user.setPassword(newPassword);
+        userMapper.updateById(user);
     }
 }
