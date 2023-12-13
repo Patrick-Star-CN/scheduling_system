@@ -33,13 +33,29 @@ public class User {
 
     enum Type {
         /**
-         * 员工
+         * 收银
          */
-        STAFF,
+        CASHIER,
         /**
-         * 门店管理员
+         * 导购
          */
-        STORE_ADMIN,
+        CUSTOMER_SERVICE,
+        /**
+         * 库房
+         */
+        STORAGE,
+        /**
+         * 门店经理
+         */
+        MANAGER,
+        /**
+         * 副经理
+         */
+        VICE_MANAGER,
+        /**
+         * 小组长
+         */
+        GROUP_MANAGER,
         /**
          * 系统管理员
          */
