@@ -31,7 +31,7 @@ public class User {
      */
     Type type;
 
-    enum Type {
+    public enum Type {
         /**
          * 收银
          */

@@ -17,7 +17,7 @@ public class Store {
      * 门店id
      */
     @TableId(type = IdType.AUTO)
-    private String id;
+    private Integer storeId;
     /**
      * 门店名字
      */
