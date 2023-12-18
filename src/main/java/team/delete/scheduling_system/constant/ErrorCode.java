@@ -22,7 +22,8 @@ public enum ErrorCode {
     PASSWORD_FORMAT_ERROR(200104, "密码格式错误"),
     /** 密码错误 */
     PASSWORD_ERROR(200105, "密码错误"),
-
+    /** 用户权限不符合 */
+    USER_PERMISSION_ERROR(200106, "用户权限不符合"),
     /** 服务器异常 */
     SERVER_ERROR(200300, "服务器异常"),
     /** 参数有误 */
