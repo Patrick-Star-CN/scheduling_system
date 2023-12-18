@@ -11,6 +11,8 @@ import team.delete.scheduling_system.entity.PreferenceDetail;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 /**
  * @author Devin100086
  * @version 1.0
@@ -35,20 +37,23 @@ public class PreferenceServiceTests {
                 build();
         preferenceService.addPreference(preference);
     }
+
     @Test
     public void deletePreference() {
-        Integer userId=2;
+        Integer userId = 2;
         preferenceService.deletePreferenceByUserId(userId);
     }
+
     @Test
-    public void selectPreferenceByUserId(){
-        Integer userId=1;
-        Preference preference=preferenceService.findPreferenceByUserId(userId);
-        System.out.println(preference.getUserId());
+    public void selectPreferenceByUserId() {
+        Integer userId = 1;
+        Preference preference = preferenceService.findPreferenceByUserId(userId);
+        assertEquals(userId, preference.getUserId());
     }
+
     @Test
-    public void updatePreference(){
-        Integer userId=1;
+    public void updatePreference() {
+        Integer userId = 1;
         List<String> time = new ArrayList<>(List.of("12:00-13:00", "16:00-28:00"));
         List<Integer> workday = new ArrayList<>(List.of(1, 3));
         PreferenceDetail preferenceDetail = PreferenceDetail.builder().

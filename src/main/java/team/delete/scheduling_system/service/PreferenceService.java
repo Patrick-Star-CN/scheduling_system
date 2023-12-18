@@ -25,12 +25,14 @@ import team.delete.scheduling_system.exception.AppException;
 public class PreferenceService {
     @Resource
     private MongoTemplate mongoTemplate;
+
     /**
      * 查询用户是否存在
+     *
      * @param userId 用户id
      */
-    private void findUser(Integer userId){
-        if(userId==null){
+    private void findUser(Integer userId) {
+        if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         // 创建条件对象
@@ -38,12 +40,14 @@ public class PreferenceService {
         Query query = new Query(criteria);
         // 查询
         Preference preference = mongoTemplate.findOne(query, Preference.class);
-        if(preference == null){
+        if (preference == null) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
     }
+
     /**
-     *查询用户个人偏好
+     * 查询用户个人偏好
+     *
      * @param userId 用户id
      * @return 偏好
      */
@@ -58,6 +62,7 @@ public class PreferenceService {
 
     /**
      * 删除用户个人偏好
+     *
      * @param userId 用户id
      */
     public void deletePreferenceByUserId(Integer userId) {
@@ -71,10 +76,11 @@ public class PreferenceService {
 
     /**
      * 添加用户偏好
+     *
      * @param preference 偏好
      */
     public void addPreference(Preference preference) {
-        if (preference==null){
+        if (preference == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         mongoTemplate.save(preference);
@@ -82,12 +88,13 @@ public class PreferenceService {
 
     /**
      * 更新用户偏好
-     * @param userId 用户id
+     *
+     * @param userId           用户id
      * @param preferenceDetail 偏好值
      */
-    public void updatePreference(Integer userId, PreferenceDetail preferenceDetail){
+    public void updatePreference(Integer userId, PreferenceDetail preferenceDetail) {
         findUser(userId);
-        if(preferenceDetail==null){
+        if (preferenceDetail == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         // 创建条件对象
