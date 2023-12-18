@@ -29,5 +29,5 @@ public class Store {
     /**
      * 占地面积
      */
-    private float size;
+    private Double size;
 }

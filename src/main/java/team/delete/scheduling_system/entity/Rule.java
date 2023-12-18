@@ -1,10 +1,15 @@
 package team.delete.scheduling_system.entity;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
+import lombok.experimental.Accessors;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.Field;
+import org.springframework.data.mongodb.core.mapping.MongoId;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,43 +18,35 @@ import java.util.Map;
  */
 @Data
 @Builder
+@ToString
+@Document(collection = "store_rules")
 public class Rule {
     /**
      * 排班规则id
      */
-    @TableId(type = IdType.AUTO)
-    Integer ruleId;
+    @Id
+    @MongoId
+    @Field("rule_id")
+    String ruleId;
     /**
      * 开店规则
      */
-    Map<String,String> openStore;
+    @Field("open_store")
+    RuleDetail openStore;
     /**
      * 闭店规则
      */
-    Map<String,String> closeStore;
+    @Field("close_store")
+    RuleDetail closeStore;
     /**
      * 客流规则
      */
-    Map<String,String> passenger;
+    @Field("passenger")
+    RuleDetail passenger;
     /**
-     * 门店
+     * 门店id
      */
-    String store;
-    /**
-     * 排班规则类型
-     */
-    public enum Type{
-        /**
-         * 开店规则
-         */
-        OPEN,
-        /**
-         * 闭店规则
-         */
-        CLOSE,
-        /**
-         * 客流规则
-         */
-        PASSENGER
-    }
+    @Field("store_id")
+    Integer storeId;
 }
+

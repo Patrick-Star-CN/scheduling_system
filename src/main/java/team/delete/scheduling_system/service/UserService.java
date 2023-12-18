@@ -46,7 +46,6 @@ public class UserService {
 
     public void changePassword(Integer userId, String oldPassword, String newPassword) {
         if (userId == null || oldPassword == null || newPassword == null) {
-            System.out.println("---" + userId + "---" + oldPassword + "---" + newPassword);
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         if (!Pattern.matches(RegexPattern.PASSWORD, newPassword)) {

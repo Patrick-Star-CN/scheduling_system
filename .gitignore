@@ -34,3 +34,4 @@ build/
 /src/main/resources/application.yml
 /src/main/resources/application-debug.yml
 /src/main/resources/application-dev.yml
+/log/

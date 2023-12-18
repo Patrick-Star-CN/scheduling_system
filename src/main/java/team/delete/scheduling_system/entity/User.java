@@ -25,7 +25,10 @@ public class User {
      * 密码
      */
     String password;
-
+    /**
+     * 门店id
+     */
+    Integer storeId;
     /**
      * 雇员职位
      */

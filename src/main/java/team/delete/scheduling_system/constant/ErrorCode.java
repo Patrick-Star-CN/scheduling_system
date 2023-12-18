@@ -24,6 +24,7 @@ public enum ErrorCode {
     PASSWORD_ERROR(200105, "密码错误"),
     /** 用户权限不符合 */
     USER_PERMISSION_ERROR(200106, "用户权限不符合"),
+
     /** 服务器异常 */
     SERVER_ERROR(200300, "服务器异常"),
     /** 参数有误 */
@@ -38,10 +39,11 @@ public enum ErrorCode {
     FILE_TYPE_ERROR(200306, "文件类型不支持"),
     /** 图片尺寸不符 */
     IMAGE_MEASUREMENT_ERROR(200307, "图片尺寸不符，图像宽高须介于 20 和 10000（像素）之间"),
+    /** 门店不存在 */
+    STORE_NOT_EXISTED(200308, "门店不存在"),
 
     /** 非法请求 */
-    ILLEGAL_REQUEST(200404, "非法请求"),
-    ;
+    ILLEGAL_REQUEST(200404, "非法请求");
 
 
 

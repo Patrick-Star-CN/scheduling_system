@@ -36,6 +36,7 @@ public class UserController {
         return AjaxResult.SUCCESS();
     }
 
+
     @ResponseBody
     @PostMapping("/change_password")
     public Object changePassword(@RequestBody Map<String, String> map) {
