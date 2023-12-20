@@ -4,13 +4,17 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import lombok.Builder;
 import lombok.Data;
+import lombok.ToString;
+import lombok.experimental.Accessors;
 
 /**
- * @author Patrick_Star
- * @version 1.2
+ * @author Patrick_Star cookie1551
+ * @version 1.3
  */
 @Data
 @Builder
+@ToString
+@Accessors(chain = true)
 public class User {
     /**
      * 用户id
@@ -29,6 +33,10 @@ public class User {
      * 门店id
      */
     Integer storeId;
+    /**
+     * 小组id
+     */
+    Integer groupId;
     /**
      * 雇员职位
      */
