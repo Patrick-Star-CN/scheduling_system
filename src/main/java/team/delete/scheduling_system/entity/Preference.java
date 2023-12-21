@@ -1,5 +1,7 @@
 package team.delete.scheduling_system.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -18,6 +20,7 @@ import java.util.List;
 @Builder
 @Document(collection = "preference")
 @Accessors(chain = true)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Preference {
     /**
      * 偏好id
