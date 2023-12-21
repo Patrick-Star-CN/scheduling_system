@@ -18,6 +18,11 @@ import team.delete.scheduling_system.interceptor.LogInterceptor;
 public class CustomWebMvcConfig implements WebMvcConfigurer {
     private final LogInterceptor logInterceptor;
 
+    /**
+     * 添加拦截器
+     *
+     * @param registry 拦截器注册表
+     */
     @Override
     public void addInterceptors(@NotNull InterceptorRegistry registry) {
         WebMvcConfigurer.super.addInterceptors(registry);

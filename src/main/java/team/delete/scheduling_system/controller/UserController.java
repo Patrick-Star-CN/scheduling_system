@@ -17,6 +17,7 @@ import java.util.Map;
  */
 @Validated
 @RestController
+@CrossOrigin
 @RequestMapping("/api/user")
 @RequiredArgsConstructor
 public class UserController {
@@ -37,6 +38,12 @@ public class UserController {
     }
 
 
+    /**
+     * 修改密码接口
+     *
+     * @param map 参数形式传入的新密码和旧密码
+     * @return json数据，包含状态码和状态信息
+     */
     @ResponseBody
     @PostMapping("/change_password")
     public Object changePassword(@RequestBody Map<String, String> map) {

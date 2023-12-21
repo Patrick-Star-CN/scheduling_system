@@ -15,15 +15,34 @@ import java.util.List;
 @Accessors(chain = true)
 public class PreferenceDetail {
     /**
-     * 工作日偏好值
+     * 偏好类型
      */
-    private List<Integer> workday;
+    private Type type;
     /**
-     * 工作时间偏好
+     * 时间段
      */
-    private List<String> time;
+    private List<Integer> time;
     /**
-     * 班次时间偏好
+     * 喜欢/不喜欢
      */
-    private Double shift;
+    private Boolean isLike;
+
+    /**
+     * 偏好类型
+     */
+    public enum Type{
+        /**
+         * 工作日偏好
+         */
+        WORKDAY,
+        /**
+         * 工作时间偏好
+         */
+        TIME,
+        /**
+         * 班次时长偏好
+         */
+        SHIFT
+    }
+
 }

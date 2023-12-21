@@ -12,6 +12,11 @@ import org.springframework.validation.beanvalidation.MethodValidationPostProcess
  */
 @Configuration
 public class ValidatorConfig {
+
+    /**
+     * 配置方法参数校验
+     * @return MethodValidationPostProcessor
+     */
     @Bean
     public MethodValidationPostProcessor methodValidationPostProcessor(){
         return new MethodValidationPostProcessor();

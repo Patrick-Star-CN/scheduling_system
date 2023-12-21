@@ -7,7 +7,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 
 /**
- * TaskExecutePool 配置类
+ * 线程池配置类
  *
  * @author Patrick_Star
  * @version 1.0
@@ -15,6 +15,11 @@ import java.util.concurrent.ThreadPoolExecutor;
 @Configuration
 public class TaskExecutePool {
 
+    /**
+     * 创建线程池
+     *
+     * @return 线程池
+     */
     @Bean
     public ThreadPoolTaskExecutor pool() {
         ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();

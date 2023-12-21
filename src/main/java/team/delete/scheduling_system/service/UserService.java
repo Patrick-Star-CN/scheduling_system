@@ -21,7 +21,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Patrick_Star cookie1551
- * @version 1.4
+ * @version 1.5
  */
 @Service
 @RequiredArgsConstructor
@@ -30,6 +30,12 @@ import java.util.regex.Pattern;
 public class UserService {
     final UserMapper userMapper;
 
+    /**
+     * 登录
+     *
+     * @param username 用户名
+     * @param password 密码
+     */
     public void login(String username, String password) {
         if (username == null || password == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
@@ -46,6 +52,13 @@ public class UserService {
         StpUtil.login(user.getUserId());
     }
 
+    /**
+     * 修改密码
+     *
+     * @param userId      用户id
+     * @param oldPassword 旧密码
+     * @param newPassword 新密码
+     */
     public void changePassword(Integer userId, String oldPassword, String newPassword) {
         if (userId == null || oldPassword == null || newPassword == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
@@ -67,44 +80,39 @@ public class UserService {
     }
 
     /**
-     * 判断权限
-     *
-     * @param user 需要判断权限的用户对象
-     */
-    public void judgePermission(User user) {
-        if (user == null) {
-            throw new AppException(ErrorCode.PARAM_ERROR);
-        }
-        if (user.getType() != User.Type.SUPER_ADMIN || user.getType() != User.Type.MANAGER || user.getType() != User.Type.VICE_MANAGER) {
-            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-        }
-    }
-
-    /**
      * 查询所有用户
      *
-     * @param user     操作的用户
+     * @param userid   操作的用户id
      * @param typeArea 查询的范围（1：门店；2：工种；3：小组）
      * @param typeId   查询的类别号
      * @return 用户信息列表
      */
-    public List<User> fetchAllUser(User user, Integer typeArea, Integer typeId) {
-        if (user == null || typeArea == null || typeId == null) {
+    public List<User> fetchAllUser(Integer userid, Integer typeArea, Integer typeId) {
+        if (userid == null || typeArea == null || typeId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
+        User user = userMapper.selectById(userid);
         switch (typeArea) {
             case 1:
-                if (user.getType() != User.Type.SUPER_ADMIN && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))) {
+                if (user.getType() != User.Type.SUPER_ADMIN
+                        && !(user.getType() == User.Type.MANAGER
+                        && user.getStoreId().equals(typeId))) {
                     throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
                 }
                 return userMapper.selectUserListByStoreId(typeId);
             case 2:
-                if (user.getType() != User.Type.SUPER_ADMIN && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId)) && !(user.getType() == User.Type.VICE_MANAGER && user.getType().equals(typeId))) {
+                if (user.getType() != User.Type.SUPER_ADMIN
+                        && !(user.getType() == User.Type.MANAGER
+                        && user.getStoreId().equals(typeId))) {
                     throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
                 }
                 return userMapper.selectUserListByProfession(typeId);
             case 3:
-                if (user.getType() != User.Type.SUPER_ADMIN && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId)) && !(user.getType() == User.Type.VICE_MANAGER && user.getType().equals(typeId)) && !(user.getType() == User.Type.GROUP_MANAGER && user.getGroupId().equals(typeId))) {
+                if (user.getType() != User.Type.SUPER_ADMIN
+                        && !(user.getType() == User.Type.MANAGER
+                        && user.getStoreId().equals(typeId))
+                        && !(user.getType() == User.Type.GROUP_MANAGER
+                        && user.getGroupId().equals(typeId))) {
                     throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
                 }
                 return userMapper.selectUserListByGroupId(typeId);
@@ -128,58 +136,68 @@ public class UserService {
     /**
      * 增加用户信息
      *
-     * @param userAdmin 操作的用户
-     * @param userAdd   新增的用户对象
+     * @param userId  操作的用户id
+     * @param userAdd 新增的用户对象
      */
-    public void addUser(User userAdmin, User userAdd) {
-        if (userAdmin == null || userAdd == null) {
+    public void addUser(Integer userId, User userAdd) {
+        checkPermission(userId, userAdd);
+        userMapper.insert(userAdd);
+    }
+
+    /**
+     * 判断权限
+     *
+     * @param userId         操作的用户id
+     * @param userNeedChange 改动的用户对象
+     */
+    private void checkPermission(Integer userId, User userNeedChange) {
+        if (userId == null || userNeedChange == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
+        User userAdmin = userMapper.selectById(userId);
         if (userAdmin.getType() != User.Type.SUPER_ADMIN
-                && !(userAdmin.getType() == User.Type.MANAGER && userAdmin.getStoreId().equals(userAdd.getStoreId()))
-                && !(userAdmin.getType() == User.Type.VICE_MANAGER && userAdmin.getType().equals(userAdd.getType()))
-                && !(userAdmin.getType() == User.Type.GROUP_MANAGER && userAdmin.getGroupId().equals(userAdd.getGroupId()))) {
+                && !(userAdmin.getType() == User.Type.MANAGER
+                && userAdmin.getStoreId().equals(userNeedChange.getStoreId()))
+                && !(userAdmin.getType() == User.Type.VICE_MANAGER
+                && userAdmin.getType().equals(userNeedChange.getType()))
+                && !(userAdmin.getType() == User.Type.GROUP_MANAGER
+                && userAdmin.getGroupId().equals(userNeedChange.getGroupId()))) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        userMapper.insert(userAdd);
     }
 
     /**
      * 删除用户信息
      *
-     * @param user   操作的用户
-     * @param userId 删除的用户对象id
+     * @param userId 操作的用户id
+     * @param userIdNeedDelete 删除的用户对象id
      */
-    public void deleteUser(User user, Integer userId) {
-        if (user == null || userId == null) {
+    public void deleteUser(Integer userId, Integer userIdNeedDelete) {
+        if (userId == null || userIdNeedDelete == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
+        User user = userMapper.selectById(userId);
         if (user.getType() != User.Type.SUPER_ADMIN
-                && (user.getType() != User.Type.MANAGER && user.getStoreId().equals(fetchUserByUserId(userId).getStoreId()))
-                && (user.getType() != User.Type.VICE_MANAGER && user.getType().equals(fetchUserByUserId(userId).getType()))
-                && (user.getType() != User.Type.GROUP_MANAGER && user.getGroupId().equals(fetchUserByUserId(userId).getGroupId()))) {
+                && (user.getType() != User.Type.MANAGER
+                && user.getStoreId().equals(fetchUserByUserId(userId).getStoreId()))
+                && (user.getType() != User.Type.VICE_MANAGER
+                && user.getType().equals(fetchUserByUserId(userId).getType()))
+                && (user.getType() != User.Type.GROUP_MANAGER
+                && user.getGroupId().equals(fetchUserByUserId(userId).getGroupId()))) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        userMapper.deleteById(userId);
+        userMapper.deleteById(userIdNeedDelete);
     }
 
     /**
      * 更新用户信息
      *
-     * @param userAdmin 操作的用户
-     * @param userUpdate   更新的用户对象
+     * @param userId     操作的用户id
+     * @param userUpdate 更新的用户对象
      */
-    public void updateUser(User userAdmin, User userUpdate) {
-        if (userAdmin == null || userUpdate == null) {
-            throw new AppException(ErrorCode.PARAM_ERROR);
-        }
-        if (userAdmin.getType() != User.Type.SUPER_ADMIN
-                && !(userAdmin.getType() == User.Type.MANAGER && userAdmin.getStoreId().equals(userUpdate.getStoreId()))
-                && !(userAdmin.getType() == User.Type.VICE_MANAGER && userAdmin.getType().equals(userUpdate.getType()))
-                && !(userAdmin.getType() == User.Type.GROUP_MANAGER && userAdmin.getGroupId().equals(userUpdate.getGroupId()))) {
-            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-        }
-        if(fetchUserByUserId(userUpdate.getUserId()) == null){
+    public void updateUser(Integer userId, User userUpdate) {
+        checkPermission(userId, userUpdate);
+        if (fetchUserByUserId(userUpdate.getUserId()) == null) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
         userMapper.updateById(userUpdate);

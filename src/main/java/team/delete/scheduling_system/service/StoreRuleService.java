@@ -20,15 +20,13 @@ import java.util.Map;
 
 /**
  * @author Patrick_Star
- * @version 1.0
+ * @version 1.1
  */
 @Service
 @RequiredArgsConstructor
 @Transactional(rollbackForClassName = "RuntimeException")
 @CacheConfig(cacheNames = "ExpireOneMin")
 public class StoreRuleService {
-    private static final String RULE_COLLECTION_NAME = "store_rules";
-
     @Resource
     private MongoTemplate mongoTemplate;
 
@@ -75,7 +73,7 @@ public class StoreRuleService {
         }
         judgeStoreExist(rule.getStoreId());
         judgePermission(userId, rule.getStoreId());
-        mongoTemplate.insert(rule, RULE_COLLECTION_NAME);
+        mongoTemplate.save(rule);
     }
 
     /**
@@ -88,13 +86,16 @@ public class StoreRuleService {
         if (ruleId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
-        Rule rule = mongoTemplate.findById(ruleId, Rule.class, RULE_COLLECTION_NAME);
+        Rule rule = mongoTemplate.findById(ruleId, Rule.class);
         if (rule == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         judgeStoreExist(rule.getStoreId());
         judgePermission(userId, rule.getStoreId());
-        mongoTemplate.remove(rule, RULE_COLLECTION_NAME);
+        Criteria criteria = Criteria.where("_id").is(ruleId);
+        // 创建查询对象，然后将条件对象添加到其中
+        Query query = Query.query(criteria);
+        mongoTemplate.remove(query, Rule.class);
     }
 
     /**
@@ -106,7 +107,7 @@ public class StoreRuleService {
     public void updateRule(Integer userId, Map<Integer, RuleDetail> ruleDetailMap, Integer storeId) {
         Criteria criteria = Criteria.where("store_id").is(storeId);
         Query query = new Query(criteria);
-        Rule rule = mongoTemplate.findOne(query, Rule.class, RULE_COLLECTION_NAME);
+        Rule rule = mongoTemplate.findOne(query, Rule.class);
         if (rule == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
@@ -120,7 +121,7 @@ public class StoreRuleService {
         if (ruleDetailMap.get(2) != null) {
             rule.setPassenger(ruleDetailMap.get(2));
         }
-        mongoTemplate.save(rule, RULE_COLLECTION_NAME);
+        mongoTemplate.save(rule);
     }
 
     /**
@@ -137,6 +138,6 @@ public class StoreRuleService {
         judgePermission(userId, storeId);
         Criteria criteria = Criteria.where("store_id").is(storeId);
         Query query = new Query(criteria);
-        return mongoTemplate.findOne(query, Rule.class, RULE_COLLECTION_NAME);
+        return mongoTemplate.findOne(query, Rule.class);
     }
 }

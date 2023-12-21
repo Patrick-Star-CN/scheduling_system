@@ -19,11 +19,21 @@ import java.util.Collections;
 @Configuration
 public class MybatisPlusConfig {
 
+    /**
+     * 自定义注入器
+     *
+     * @return EasySqlInjector
+     */
     @Bean
     public EasySqlInjector easySqlInjector() {
         return new EasySqlInjector();
     }
 
+    /**
+     * 全局配置
+     *
+     * @return GlobalConfig
+     */
     @Bean
     public GlobalConfig globalConfiguration() {
         GlobalConfig conf = new GlobalConfig();
@@ -32,7 +42,9 @@ public class MybatisPlusConfig {
         return conf;
     }
 
-
+    /**
+     * 分页插件
+     */
     @Bean
     public PaginationInnerInterceptor paginationInnerInterceptor() {
         PaginationInnerInterceptor paginationInterceptor = new PaginationInnerInterceptor();

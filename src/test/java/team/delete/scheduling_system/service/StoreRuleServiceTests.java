@@ -30,7 +30,7 @@ public class StoreRuleServiceTests {
     @Test
     public void testInsertRule() {
         storeRuleService.insertRule(1, Rule.builder()
-                .storeId(1)
+                .storeId(2)
                 .closeStore(RuleDetail.builder()
                         .count(1)
                         .formula(3.5)
@@ -53,16 +53,16 @@ public class StoreRuleServiceTests {
                 .formula(2.5)
                 .time(4.5).build());
 
-        storeRuleService.updateRule(1, ruleDetailMap,1);
+        storeRuleService.updateRule(1, ruleDetailMap,2);
     }
 
     @Test
     public void testGetRule() {
-        assertEquals("6580746c73981656f4634e11", storeRuleService.fetchRule(1, 1).getRuleId());
+        assertEquals("65831f40e9ddcc228fbb6e08", storeRuleService.fetchRule(1, 2).getRuleId());
     }
 
     @Test
     public void testRemoveRule() {
-        storeRuleService.deleteRule(1, "6580746c73981656f4634e11");
+        storeRuleService.deleteRule(1, "65831f40e9ddcc228fbb6e08");
     }
 }

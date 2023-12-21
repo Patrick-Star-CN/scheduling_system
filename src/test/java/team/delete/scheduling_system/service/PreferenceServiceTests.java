@@ -25,23 +25,22 @@ public class PreferenceServiceTests {
 
     @Test
     public void testAdd() {
-        List<String> time = new ArrayList<>(List.of("10:00-12:00", "18:00-20:00"));
-        List<Integer> workday = new ArrayList<>(List.of(1, 2, 3));
-        PreferenceDetail preferenceDetail = PreferenceDetail.builder().
-                time(time).
-                workday(workday).
-                build();
-        Preference preference = Preference.builder().
-                preferenceDetail(preferenceDetail).
-                userId(2).
-                build();
-        preferenceService.addPreference(preference);
+        Integer userId = 1;
+        PreferenceDetail preferenceDetail = PreferenceDetail.builder()
+                .type(PreferenceDetail.Type.TIME)
+                .time(new ArrayList<>(List.of(8, 10)))
+                .isLike(true)
+                .build();
+        Preference preference = Preference.builder()
+                .userId(userId)
+                .preferenceDetail(new ArrayList<>(List.of(preferenceDetail)))
+                .build();
+        preferenceService.addPreference(userId, preference);
     }
 
     @Test
     public void deletePreference() {
-        Integer userId = 2;
-        preferenceService.deletePreferenceByUserId(userId);
+        preferenceService.deletePreferenceByUserId(1);
     }
 
     @Test
@@ -53,13 +52,17 @@ public class PreferenceServiceTests {
 
     @Test
     public void updatePreference() {
-        Integer userId = 1;
-        List<String> time = new ArrayList<>(List.of("12:00-13:00", "16:00-28:00"));
-        List<Integer> workday = new ArrayList<>(List.of(1, 3));
-        PreferenceDetail preferenceDetail = PreferenceDetail.builder().
-                time(time).
-                workday(workday).
-                build();
-        preferenceService.updatePreference(userId, preferenceDetail);
+        PreferenceDetail newPreferenceDetail = PreferenceDetail.builder()
+                .type(PreferenceDetail.Type.TIME)
+                .time(new ArrayList<>(List.of(8, 11)))
+                .isLike(true)
+                .build();
+        PreferenceDetail oldPreferenceDetail = PreferenceDetail.builder()
+                .type(PreferenceDetail.Type.TIME)
+                .time(new ArrayList<>(List.of(8, 10)))
+                .isLike(true)
+                .build();
+
+        preferenceService.updatePreference(1, oldPreferenceDetail, newPreferenceDetail);
     }
 }
