@@ -22,6 +22,13 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @Configuration
 public class RedisConfig {
+
+    /**
+     * Redis 缓存管理器
+     *
+     * @param connectionFactory Redis 连接工厂
+     * @return RedisCacheManager
+     */
     @Bean
     public RedisCacheManager redisCacheManager(RedisConnectionFactory connectionFactory) {
         // 序列化方式
@@ -38,6 +45,12 @@ public class RedisConfig {
                 .build();
     }
 
+    /**
+     * Redis 模板
+     *
+     * @param factory Redis 连接工厂
+     * @return RedisTemplate
+     */
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, Object> template = new RedisTemplate<>();

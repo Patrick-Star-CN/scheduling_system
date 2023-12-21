@@ -16,10 +16,18 @@ public class ProfileConfig {
 
     private final ApplicationContext context;
 
+    /**
+     * 获取当前激活的 Profile
+     * @return 当前激活的 Profile
+     */
     public String getActiveProfile() {
         return context.getEnvironment().getActiveProfiles()[0];
     }
 
+    /**
+     * 判断当前是否为开发环境
+     * @return 是否为开发环境
+     */
     public boolean isDev() {
         String activeProfile = getActiveProfile();
         return "dev".equals(activeProfile) || "debug".equals(activeProfile);

@@ -10,8 +10,8 @@ import team.delete.scheduling_system.entity.User;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author cookie1551 yyhelen
- * @version 1.0
+ * @author cookie1551 yyhelen Patrick_Star
+ * @version 1.1
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -21,13 +21,7 @@ public class UserServiceTests {
 
     @Test
     public void testAddUser() {
-        userService.addUser(User.builder()
-                        .userId(1)
-                        .username("li")
-                        .password("NewPassword123!")
-                        .storeId(1)
-                        .groupId(1)
-                        .type(User.Type.MANAGER).build(),
+        userService.addUser(1,
                 User.builder()
                         .userId(5)
                         .username("李四")
@@ -39,14 +33,7 @@ public class UserServiceTests {
 
     @Test
     public void testDeleteUser() {
-        Integer userId = 5;
-        userService.deleteUser(User.builder()
-                .userId(1)
-                .username("li")
-                .password("NewPassword123!")
-                .storeId(1)
-                .groupId(1)
-                .type(User.Type.MANAGER).build(),userId);
+        userService.deleteUser(1, 5);
     }
 
     @Test
@@ -58,13 +45,7 @@ public class UserServiceTests {
 
     @Test
     public void testUpdateUser() {
-        userService.updateUser(User.builder()
-                        .userId(1)
-                        .username("li")
-                        .password("NewPassword123!")
-                        .storeId(1)
-                        .groupId(1)
-                        .type(User.Type.MANAGER).build(),
+        userService.updateUser(1,
                 User.builder()
                         .userId(5)
                         .username("王五")
@@ -77,21 +58,18 @@ public class UserServiceTests {
     @Test
     public void testChangePasswordSuccess() {
         Integer userId = 1;
-        String oldPassword = "oldPassword";
-        String newPassword = "NewPassword123!";
+        String oldPassword = "Admin123";
+        String newPassword = "Admin123!";
         userService.changePassword(userId, oldPassword, newPassword);
     }
 
     @Test
     public void testLogin() {
-        User user = User.builder()
-                .userId(1)
-                .username("li")
-                .password("NewPassword123!")
-                .storeId(1)
-                .groupId(1)
-                .type(User.Type.MANAGER)
-                .build();
-        userService.login("li", "NewPassword123!");
+        userService.login("admin", "Admin123");
+    }
+
+    @Test
+    public void testFetchAllUser() {
+
     }
 }
