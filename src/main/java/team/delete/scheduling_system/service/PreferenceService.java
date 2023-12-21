@@ -71,16 +71,18 @@ public class PreferenceService {
     /**
      * 删除用户个人偏好
      *
-     * @param userId              用户id
-     * @param oldPreferenceDetail 旧偏好
+     * @param userId                用户id
+     * @param oldPreferenceDetailId 旧偏好id
      */
-    public void deletePreferenceByUserId(Integer userId, PreferenceDetail oldPreferenceDetail) {
-        if (userId == null || oldPreferenceDetail == null) {
+    public void deletePreferenceByUserId(Integer userId, Integer oldPreferenceDetailId) {
+        if (userId == null || oldPreferenceDetailId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
-        checkDetail(oldPreferenceDetail);
         Preference preference = findPreferenceByUserId(userId);
-        preference.getPreferenceDetail().remove(oldPreferenceDetail);
+        if (oldPreferenceDetailId > preference.getPreferenceDetail().size() || oldPreferenceDetailId < 0) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        preference.getPreferenceDetail().remove((int) oldPreferenceDetailId);
         // 创建条件对象
         Criteria criteria = Criteria.where("userId").is(userId);
         // 创建查询对象，然后将条件对象添加到其中
@@ -109,6 +111,9 @@ public class PreferenceService {
                     .userId(userId)
                     .preferenceDetail(preferenceDetails).build();
         } else {
+            if (preferenceNow.getPreferenceDetail() == null) {
+                preferenceNow.setPreferenceDetail(new ArrayList<>());
+            }
             preferenceNow.getPreferenceDetail().add(preferenceDetail);
         }
         mongoTemplate.save(preferenceNow);
@@ -117,20 +122,24 @@ public class PreferenceService {
     /**
      * 更新用户偏好
      *
-     * @param userId              用户id
-     * @param oldPreferenceDetail 旧偏好
-     * @param newPreferenceDetail 新偏好
+     * @param userId                用户id
+     * @param oldPreferenceDetailId 旧偏好id
+     * @param newPreferenceDetail   新偏好
      */
     public void updatePreference(Integer userId,
-                                 PreferenceDetail oldPreferenceDetail,
+                                 Integer oldPreferenceDetailId,
                                  PreferenceDetail newPreferenceDetail) {
-        if (userId == null || oldPreferenceDetail == null || newPreferenceDetail == null) {
+        if (userId == null || oldPreferenceDetailId == null || newPreferenceDetail == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
-        checkDetail(oldPreferenceDetail);
         checkDetail(newPreferenceDetail);
         Preference preference = findPreferenceByUserId(userId);
-        preference.getPreferenceDetail().remove(oldPreferenceDetail);
+        if (preference == null
+                || preference.getPreferenceDetail() != null && oldPreferenceDetailId > preference.getPreferenceDetail().size()
+                || oldPreferenceDetailId < 0) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        preference.getPreferenceDetail().remove((int) oldPreferenceDetailId);
         preference.getPreferenceDetail().add(newPreferenceDetail);
         // 创建条件对象
         Criteria criteria = Criteria.where("userId").is(userId);

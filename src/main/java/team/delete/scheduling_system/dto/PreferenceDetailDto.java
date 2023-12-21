@@ -14,6 +14,6 @@ import team.delete.scheduling_system.entity.PreferenceDetail;
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PreferenceDetailDto {
-    private PreferenceDetail oldPreferenceDetail;
+    private Integer oldPreferenceDetailId;
     private PreferenceDetail newPreferenceDetail;
 }
