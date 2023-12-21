@@ -14,8 +14,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author Devin100086
- * @version 1.0
+ * @author Devin100086 Patrick_Star
+ * @version 1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -35,12 +35,7 @@ public class PreferenceServiceTests {
 
     @Test
     public void deletePreference() {
-        PreferenceDetail oldPreferenceDetail = PreferenceDetail.builder()
-                .type(PreferenceDetail.Type.WORKDAY)
-                .time(new ArrayList<>(List.of(1, 2)))
-                .isLike(true)
-                .build();
-        preferenceService.deletePreferenceByUserId(1, oldPreferenceDetail);
+        preferenceService.deletePreferenceByUserId(1, 1);
     }
 
     @Test
@@ -57,12 +52,7 @@ public class PreferenceServiceTests {
                 .time(new ArrayList<>(List.of(3, 4)))
                 .isLike(true)
                 .build();
-        PreferenceDetail oldPreferenceDetail = PreferenceDetail.builder()
-                .type(PreferenceDetail.Type.WORKDAY)
-                .time(new ArrayList<>(List.of(1, 2)))
-                .isLike(true)
-                .build();
 
-        preferenceService.updatePreference(1, oldPreferenceDetail, newPreferenceDetail);
+        preferenceService.updatePreference(1, 0, newPreferenceDetail);
     }
 }

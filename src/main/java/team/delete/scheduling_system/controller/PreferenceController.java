@@ -61,7 +61,7 @@ public class PreferenceController {
     @PutMapping
     public Object updatePreference(@RequestBody PreferenceDetailDto preferenceDetailDto) {
         preferenceService.updatePreference(StpUtil.getLoginIdAsInt(),
-                preferenceDetailDto.getOldPreferenceDetail(),
+                preferenceDetailDto.getOldPreferenceDetailId(),
                 preferenceDetailDto.getNewPreferenceDetail());
         return AjaxResult.SUCCESS();
     }
@@ -69,13 +69,13 @@ public class PreferenceController {
     /**
      * 删除偏好接口
      *
-     * @param preferenceDetail 参数形式传入的偏好对象
+     * @param id 参数形式传入的偏好对象编号
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-    @DeleteMapping
-    public Object deletePreference(@RequestBody PreferenceDetail preferenceDetail) {
-        preferenceService.deletePreferenceByUserId(StpUtil.getLoginIdAsInt(), preferenceDetail);
+    @DeleteMapping("/{id}")
+    public Object deletePreference(@PathVariable Integer id) {
+        preferenceService.deletePreferenceByUserId(StpUtil.getLoginIdAsInt(), id);
         return AjaxResult.SUCCESS();
     }
 
