@@ -14,6 +14,7 @@ import team.delete.scheduling_system.constant.RegexPattern;
 import team.delete.scheduling_system.entity.Store;
 import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.exception.AppException;
+import team.delete.scheduling_system.mapper.ProfessionMapper;
 import team.delete.scheduling_system.mapper.UserMapper;
 
 import java.util.List;
@@ -87,38 +88,35 @@ public class UserService {
      * @param typeId   查询的类别号
      * @return 用户信息列表
      */
-    public List<User> fetchAllUser(Integer userid, Integer typeArea, Integer typeId) {
-        if (userid == null || typeArea == null || typeId == null) {
-            throw new AppException(ErrorCode.PARAM_ERROR);
-        }
-        User user = userMapper.selectById(userid);
-        switch (typeArea) {
-            case 1:
-                if (user.getType() != User.Type.SUPER_ADMIN
-                        && !(user.getType() == User.Type.MANAGER
-                        && user.getStoreId().equals(typeId))) {
-                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-                }
-                return userMapper.selectUserListByStoreId(typeId);
-            case 2:
-                if (user.getType() != User.Type.SUPER_ADMIN
-                        && !(user.getType() == User.Type.MANAGER
-                        && user.getStoreId().equals(typeId))) {
-                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-                }
-                return userMapper.selectUserListByProfession(typeId);
-            case 3:
-                if (user.getType() != User.Type.SUPER_ADMIN
-                        && !(user.getType() == User.Type.MANAGER
-                        && user.getStoreId().equals(typeId))
-                        && !(user.getType() == User.Type.GROUP_MANAGER
-                        && user.getGroupId().equals(typeId))) {
-                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-                }
-                return userMapper.selectUserListByGroupId(typeId);
-        }
-        return userMapper.selectList(null);
-    }
+//    public List<User> fetchAllUser(Integer userid, Integer typeArea, Integer typeId) {
+//        if (userid == null || typeArea == null || typeId == null) {
+//            throw new AppException(ErrorCode.PARAM_ERROR);
+//        }
+//        User user = userMapper.selectById(userid);
+//        switch (typeArea) {
+//            case 1:
+//                if (user.getType() != User.Type.SUPER_ADMIN
+//                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))) {
+//                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+//                }
+//                return userMapper.selectUserListByStoreId(typeId);
+//            case 2:
+//                if (user.getType() != User.Type.SUPER_ADMIN
+//                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))
+//                        && !(user.getType() == User.Type.VICE_MANAGER && professionMapper.selectById(typeId).getManagerId())) {
+//                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+//                }
+//                return userMapper.selectUserListByProfession(typeId);
+//            case 3:
+//                if (user.getType() != User.Type.SUPER_ADMIN
+//                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))
+//                        && !(user.getType() == User.Type.GROUP_MANAGER && user.getGroupId().equals(typeId))) {
+//                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+//                }
+//                return userMapper.selectUserListByGroupId(typeId);
+//        }
+//        return userMapper.selectList(null);
+//    }
 
     /**
      * 查询用户信息
@@ -197,7 +195,7 @@ public class UserService {
      */
     public void updateUser(Integer userId, User userUpdate) {
         checkPermission(userId, userUpdate);
-        if (fetchUserByUserId(userUpdate.getUserId()) == null) {
+        if (userMapper.selectById(userUpdate.getUserId()) == null) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
         userMapper.updateById(userUpdate);

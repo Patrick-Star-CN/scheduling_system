@@ -24,7 +24,7 @@ public class User {
     /**
      * 用户名
      */
-    String username;
+    String name;
     /**
      * 密码
      */
