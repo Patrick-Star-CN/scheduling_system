@@ -10,11 +10,12 @@ import team.delete.scheduling_system.entity.User;
 import java.util.List;
 
 /**
- * @author cookie1551
- * @version 1.0
+ * @author cookie1551 Patrick_Star
+ * @version 1.1
  */
 @Mapper
 public interface GroupMapper extends BaseMapper<Group> {
-    @Select("SELECT * FROM group_db WHERE group_db.type = #{type} AND  group_db.store_id = #{storeId}")
-    List<Group> selectGroupList(Profession.Type type, Integer storeId);
+    @Select("SELECT * FROM group_tb WHERE group_tb.type = #{type} AND  group_tb.store_id = #{storeId}")
+    List<Group> selectGroupList(User.Type type, Integer storeId);
+
 }

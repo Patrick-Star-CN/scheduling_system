@@ -8,8 +8,8 @@ import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
- * @author cookie1551
- * @version 1.0
+ * @author cookie1551 Patrick_Star
+ * @version 1.1
  */
 @Data
 @Builder
@@ -32,19 +32,5 @@ public class Profession {
     /**
      * 工种
      */
-    Type type;
-    public enum Type {
-        /**
-         * 收银
-         */
-        CASHIER,
-        /**
-         * 导购
-         */
-        CUSTOMER_SERVICE,
-        /**
-         * 库房
-         */
-        STORAGE
-    }
+    User.Type type;
 }

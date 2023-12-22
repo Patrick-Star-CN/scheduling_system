@@ -3,20 +3,23 @@ package team.delete.scheduling_system.entity;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
 /**
- * @author cookie1551
- * @version 1.0
+ * @author cookie1551 Patrick_Star
+ * @version 1.1
  */
 @Data
 @Builder
 @ToString
 @Accessors(chain = true)
 @TableName("group_tb")
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Group {
     /**
      * 小组id
@@ -32,7 +35,11 @@ public class Group {
      */
     Integer managerId;
     /**
+     * 小组名
+     */
+    String name;
+    /**
      * 工种
      */
-    Profession.Type type;
+    User.Type type;
 }

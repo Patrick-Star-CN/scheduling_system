@@ -7,14 +7,15 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import team.delete.scheduling_system.entity.Group;
 import team.delete.scheduling_system.entity.Profession;
+import team.delete.scheduling_system.entity.User;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author cookie1551
- * @version 1.1
+ * @author cookie1551 Patrick_Star
+ * @version 1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -24,11 +25,7 @@ public class GroupServiceTests {
 
     @Test
     public void testAddGroup() {
-        groupService.addGroup(3,
-                Group.builder()
-                        .storeId(1)
-                        .managerId(2)
-                        .type(Profession.Type.CASHIER).build());
+        groupService.addGroup(4, 5, "test");
     }
 
     @Test
@@ -43,7 +40,7 @@ public class GroupServiceTests {
                         .id(2)
                         .storeId(1)
                         .managerId(3)
-                        .type(Profession.Type.CASHIER).build());
+                        .type(User.Type.CASHIER).build());
     }
 
     @Test
@@ -61,5 +58,11 @@ public class GroupServiceTests {
         groupList.forEach(group -> {
             assertEquals((Integer) 1, group.getStoreId());
         });
+    }
+
+    @Test
+    public void testFetchGroupByStoreIdAndManagerId() {
+        List<Group> groupList = groupService.fetchGroupListByTypeAndStoreId(3, User.Type.STORAGE, 1);
+        groupList.forEach(group -> assertEquals((Integer) 1, group.getStoreId()));
     }
 }
