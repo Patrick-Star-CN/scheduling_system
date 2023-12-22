@@ -20,7 +20,7 @@ public class Profession {
      * 工种id
      */
     @TableId(type = IdType.AUTO)
-    Integer professionId;
+    Integer id;
     /**
      * 门店id
      */

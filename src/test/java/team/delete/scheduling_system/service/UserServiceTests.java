@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import team.delete.scheduling_system.dto.UserDto;
 import team.delete.scheduling_system.entity.User;
 
 import java.util.List;
@@ -41,8 +42,9 @@ public class UserServiceTests {
     @Test
     public void testFetchUserByUserId() {
         Integer userId = 1;
-        User user = userService.fetchUserByUserId(userId);
-        assertEquals(userId, user.getUserId());
+        UserDto userDto = userService.fetchUserDtoByUserId(userId);
+        System.out.println(userDto);
+        assertEquals(userId, userDto.getUserId());
     }
 
     @Test
@@ -67,7 +69,7 @@ public class UserServiceTests {
 
     @Test
     public void testLogin() {
-        userService.login("admin", "Admin123");
+        assertEquals(User.Type.SUPER_ADMIN, userService.login("Admin", "Admin123"));
     }
 
 //    @Test
