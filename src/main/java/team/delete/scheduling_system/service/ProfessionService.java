@@ -1,12 +1,10 @@
 package team.delete.scheduling_system.service;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.delete.scheduling_system.constant.ErrorCode;
-import team.delete.scheduling_system.entity.Group;
 import team.delete.scheduling_system.entity.Profession;
 import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.exception.AppException;
@@ -129,7 +127,7 @@ public class ProfessionService{
      */
     public void updateProfession(Integer userId, Profession professionUpdate) {
         judgePermission(userId, professionUpdate.getId());
-        if (professionMapper.selectById(professionUpdate.getManagerId()) == null) {
+        if (professionMapper.selectById(professionUpdate.getId()) == null) {
             throw new AppException(ErrorCode.Profession_NOT_EXISTED);
         }
         professionMapper.updateById(professionUpdate);

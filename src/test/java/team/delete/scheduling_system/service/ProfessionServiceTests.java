@@ -5,12 +5,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import team.delete.scheduling_system.entity.Group;
 import team.delete.scheduling_system.entity.Profession;
-import team.delete.scheduling_system.entity.User;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
