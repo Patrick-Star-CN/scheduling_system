@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.delete.scheduling_system.constant.ErrorCode;
 import team.delete.scheduling_system.constant.RegexPattern;
+import team.delete.scheduling_system.dto.UserDto;
 import team.delete.scheduling_system.entity.Store;
 import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.exception.AppException;
@@ -125,11 +126,24 @@ public class UserService {
      * @param userId 查询的用户对象id
      * @return 用户信息列表
      */
-    public User fetchUserByUserId(Integer userId) {
+    private User fetchUserByUserId(Integer userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         return userMapper.selectById(userId);
+    }
+
+    /**
+     * 查询用户信息
+     *
+     * @param userId 查询的用户对象id
+     * @return 用户信息列表
+     */
+    public UserDto fetchUserDtoByUserId(Integer userId) {
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        return userMapper.selectUserByUserId(userId);
     }
 
     /**

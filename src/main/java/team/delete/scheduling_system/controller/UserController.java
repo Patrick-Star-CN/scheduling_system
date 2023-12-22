@@ -58,9 +58,46 @@ public class UserController {
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-    @PostMapping("/add")
+    @PostMapping
     public Object addUser(@RequestBody User user) {
         userService.addUser(StpUtil.getLoginIdAsInt(), user);
+        return AjaxResult.SUCCESS();
+    }
+
+    /**
+     * 删除用户接口
+     *
+     * @param userId 参数形式传入的用户对象id
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @DeleteMapping("/{userId}")
+    public Object deleteUser(@PathVariable Integer userId) {
+        userService.deleteUser(StpUtil.getLoginIdAsInt(), userId);
+        return AjaxResult.SUCCESS();
+    }
+
+    /**
+     * 查询用户个人信息接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping
+    public Object fetchUserByUserId() {
+        return AjaxResult.SUCCESS(userService.fetchUserDtoByUserId(StpUtil.getLoginIdAsInt()));
+    }
+
+    /**
+     * 修改用户个人信息接口
+     *
+     * @param user 参数形式传入的用户对象
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @PutMapping
+    public Object updateUser(@RequestBody User user) {
+        userService.updateUser(StpUtil.getLoginIdAsInt(), user);
         return AjaxResult.SUCCESS();
     }
 

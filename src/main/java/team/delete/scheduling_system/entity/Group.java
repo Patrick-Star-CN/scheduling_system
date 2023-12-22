@@ -16,13 +16,13 @@ import lombok.experimental.Accessors;
 @Builder
 @ToString
 @Accessors(chain = true)
-@TableName("group_db")
+@TableName("group_tb")
 public class Group {
     /**
      * 小组id
      */
     @TableId(type = IdType.AUTO)
-    Integer groupId;
+    Integer id;
     /**
      * 门店id
      */
