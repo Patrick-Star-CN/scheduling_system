@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.delete.scheduling_system.dto.AjaxResult;
+import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.service.UserService;
 
 import java.util.Map;
@@ -47,6 +48,19 @@ public class UserController {
     @PostMapping("/change_password")
     public Object changePassword(@RequestBody Map<String, String> map) {
         userService.changePassword(StpUtil.getLoginIdAsInt(), map.get("old_password"), map.get("new_password"));
+        return AjaxResult.SUCCESS();
+    }
+
+    /**
+     * 新增用户接口
+     *
+     * @param user 参数形式传入的用户对象
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @PostMapping("/add")
+    public Object addUser(@RequestBody User user) {
+        userService.addUser(StpUtil.getLoginIdAsInt(), user);
         return AjaxResult.SUCCESS();
     }
 

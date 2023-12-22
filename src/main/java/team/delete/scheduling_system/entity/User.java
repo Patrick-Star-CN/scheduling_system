@@ -2,6 +2,8 @@ package team.delete.scheduling_system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -15,6 +17,7 @@ import lombok.experimental.Accessors;
 @Builder
 @ToString
 @Accessors(chain = true)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class User {
     /**
      * 用户id

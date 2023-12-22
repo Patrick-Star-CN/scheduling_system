@@ -20,7 +20,9 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("SELECT * FROM user WHERE user.store_id = #{storeId}")
     List<User> selectUserListByStoreId(Integer storeId);
 
-    @Select("SELECT * FROM user, profession WHERE profession.id = #{professionId} AND user.type = profession.type AND user.store_id = profession.store_id")
+    @Select("SELECT * FROM user, profession WHERE profession.id = #{professionId} " +
+            "AND user.type = profession.type " +
+            "AND user.store_id = profession.store_id")
     List<User> selectUserListByProfession(Integer professionId);
 
     @Select("SELECT * FROM user WHERE user.group_id = #{groupId}")

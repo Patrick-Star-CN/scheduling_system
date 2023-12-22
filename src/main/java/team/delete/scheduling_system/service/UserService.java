@@ -42,7 +42,7 @@ public class UserService {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         QueryWrapper<User> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("username", username);
+        queryWrapper.eq("name", username);
         User user = userMapper.selectOne(queryWrapper);
         if (user == null) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);

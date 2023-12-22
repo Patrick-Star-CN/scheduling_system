@@ -128,8 +128,8 @@ public class ProfessionService{
      * @param professionUpdate 更新的职位对象
      */
     public void updateProfession(Integer userId, Profession professionUpdate) {
-        judgePermission(userId, professionUpdate.getProfessionId());
-        if (professionMapper.selectById(professionUpdate.getProfessionId()) == null) {
+        judgePermission(userId, professionUpdate.getId());
+        if (professionMapper.selectById(professionUpdate.getManagerId()) == null) {
             throw new AppException(ErrorCode.Profession_NOT_EXISTED);
         }
         professionMapper.updateById(professionUpdate);
