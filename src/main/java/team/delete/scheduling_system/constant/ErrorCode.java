@@ -48,6 +48,18 @@ public enum ErrorCode {
     USER_PREFERENCE_EXISTED(200108, "用户偏好已存在"),
 
     /**
+     * 组别不存在
+     */
+    GROUP_NOT_EXISTED(200102, "组别不存在"),
+    /**
+     * 职位已存在
+     */
+    Profession_EXISTED(200101, "职位已存在"),
+    /**
+     * 职位不存在
+     */
+    Profession_NOT_EXISTED(200102, "职位不存在"),
+    /**
      * 服务器异常
      */
     SERVER_ERROR(200300, "服务器异常"),

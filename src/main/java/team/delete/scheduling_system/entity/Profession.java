@@ -20,7 +20,7 @@ public class Profession {
      * 工种id
      */
     @TableId(type = IdType.AUTO)
-    Integer id;
+    Integer professionId;
     /**
      * 门店id
      */
@@ -32,5 +32,19 @@ public class Profession {
     /**
      * 工种
      */
-    User.Type type;
+    Type type;
+    public enum Type {
+        /**
+         * 收银
+         */
+        CASHIER,
+        /**
+         * 导购
+         */
+        CUSTOMER_SERVICE,
+        /**
+         * 库房
+         */
+        STORAGE
+    }
 }

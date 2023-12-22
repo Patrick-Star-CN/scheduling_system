@@ -7,6 +7,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import team.delete.scheduling_system.entity.User;
 
+import java.util.List;
+
 import static org.junit.Assert.assertEquals;
 
 /**
@@ -24,11 +26,11 @@ public class UserServiceTests {
         userService.addUser(1,
                 User.builder()
                         .userId(5)
-                        .username("李四")
+                        .name("李四")
                         .password("12345678")
                         .storeId(1)
                         .groupId(1)
-                        .type(User.Type.GROUP_MANAGER).build());
+                        .type(User.Type.CUSTOMER_SERVICE).build());
     }
 
     @Test
@@ -37,7 +39,7 @@ public class UserServiceTests {
     }
 
     @Test
-    public void testSelectUserByUserId() {
+    public void testFetchUserByUserId() {
         Integer userId = 1;
         User user = userService.fetchUserByUserId(userId);
         assertEquals(userId, user.getUserId());
@@ -48,7 +50,7 @@ public class UserServiceTests {
         userService.updateUser(1,
                 User.builder()
                         .userId(5)
-                        .username("王五")
+                        .name("王五")
                         .password("12345678")
                         .storeId(1)
                         .groupId(1)
@@ -68,8 +70,25 @@ public class UserServiceTests {
         userService.login("admin", "Admin123");
     }
 
-    @Test
-    public void testFetchAllUser() {
-
-    }
+//    @Test
+//    public void testFetchAllUser() {
+//        Integer userId = 1;
+//        Integer typeArea = 3;
+//        Integer typeId = 1;
+//        List<User> userList = userService.fetchAllUser(userId, typeArea, typeId);
+//        switch (typeArea) {
+//            case 1:
+//                userList.forEach(user -> {
+//                    assertEquals(typeId, user.getStoreId());
+//                });
+//            case 2:
+//                userList.forEach(user -> {
+//                    assertEquals("CASHIER", user.getType());
+//                });
+//            case 3:
+//                userList.forEach(user -> {
+//                    assertEquals(typeId, user.getGroupId());
+//                });
+//        }
+//    }
 }

@@ -2,6 +2,7 @@ package team.delete.scheduling_system.entity;
 
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
@@ -15,12 +16,13 @@ import lombok.experimental.Accessors;
 @Builder
 @ToString
 @Accessors(chain = true)
+@TableName("group_db")
 public class Group {
     /**
      * 小组id
      */
     @TableId(type = IdType.AUTO)
-    Integer id;
+    Integer groupId;
     /**
      * 门店id
      */
@@ -32,5 +34,5 @@ public class Group {
     /**
      * 工种
      */
-    User.Type type;
+    Profession.Type type;
 }
