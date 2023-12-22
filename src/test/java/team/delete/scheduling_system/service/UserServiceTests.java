@@ -13,7 +13,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * @author cookie1551 yyhelen Patrick_Star
- * @version 1.1
+ * @version 1.2
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -70,10 +70,10 @@ public class UserServiceTests {
         userService.login("admin", "Admin123");
     }
 
-//    @Test
-//    public void testFetchAllUser() {
+    @Test
+    public void testFetchAllUser() {
 //        Integer userId = 1;
-//        Integer typeArea = 3;
+//        Integer typeArea = 2;
 //        Integer typeId = 1;
 //        List<User> userList = userService.fetchAllUser(userId, typeArea, typeId);
 //        switch (typeArea) {
@@ -81,14 +81,17 @@ public class UserServiceTests {
 //                userList.forEach(user -> {
 //                    assertEquals(typeId, user.getStoreId());
 //                });
+//                break;
 //            case 2:
 //                userList.forEach(user -> {
 //                    assertEquals("CASHIER", user.getType());
 //                });
+//                break;
 //            case 3:
 //                userList.forEach(user -> {
 //                    assertEquals(typeId, user.getGroupId());
 //                });
+//                break;
 //        }
-//    }
+    }
 }

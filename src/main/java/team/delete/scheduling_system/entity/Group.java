@@ -22,7 +22,7 @@ public class Group {
      * 小组id
      */
     @TableId(type = IdType.AUTO)
-    Integer groupId;
+    Integer id;
     /**
      * 门店id
      */

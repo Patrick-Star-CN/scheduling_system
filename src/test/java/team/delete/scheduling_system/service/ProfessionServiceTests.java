@@ -5,12 +5,9 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-import team.delete.scheduling_system.entity.Group;
 import team.delete.scheduling_system.entity.Profession;
-import team.delete.scheduling_system.entity.User;
 
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 
@@ -36,7 +33,7 @@ public class ProfessionServiceTests {
     public void testFetchProfessionByProfessionId() {
         Integer professionId = 1;
         Profession profession = professionService.fetchProfessionByProfessionId(2, professionId);
-        assertEquals(professionId, profession.getProfessionId());
+        assertEquals(professionId, profession.getId());
     }
 
     @Test
@@ -61,7 +58,7 @@ public class ProfessionServiceTests {
     public void testUpdateProfession() {
         professionService.updateProfession(2,
                 Profession.builder()
-                        .professionId(4)
+                        .id(4)
                         .storeId(1)
                         .managerId(2)
                         .type(Profession.Type.STORAGE).build());

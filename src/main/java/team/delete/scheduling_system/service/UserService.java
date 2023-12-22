@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.delete.scheduling_system.constant.ErrorCode;
 import team.delete.scheduling_system.constant.RegexPattern;
+import team.delete.scheduling_system.entity.Profession;
 import team.delete.scheduling_system.entity.Store;
 import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.exception.AppException;
@@ -22,7 +23,7 @@ import java.util.regex.Pattern;
 
 /**
  * @author Patrick_Star cookie1551
- * @version 1.5
+ * @version 1.6
  */
 @Service
 @RequiredArgsConstructor
@@ -30,6 +31,7 @@ import java.util.regex.Pattern;
 @CacheConfig(cacheNames = "ExpireOneMin")
 public class UserService {
     final UserMapper userMapper;
+    final ProfessionMapper professionMapper;
 
     /**
      * 登录
@@ -88,10 +90,10 @@ public class UserService {
      * @param typeId   查询的类别号
      * @return 用户信息列表
      */
-//    public List<User> fetchAllUser(Integer userid, Integer typeArea, Integer typeId) {
-//        if (userid == null || typeArea == null || typeId == null) {
-//            throw new AppException(ErrorCode.PARAM_ERROR);
-//        }
+    public List<User> fetchAllUser(Integer userid, Integer typeArea, Integer typeId) {
+        if (userid == null || typeArea == null || typeId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
 //        User user = userMapper.selectById(userid);
 //        switch (typeArea) {
 //            case 1:
@@ -103,20 +105,21 @@ public class UserService {
 //            case 2:
 //                if (user.getType() != User.Type.SUPER_ADMIN
 //                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))
-//                        && !(user.getType() == User.Type.VICE_MANAGER && professionMapper.selectById(typeId).getManagerId())) {
+//                        && !(user.getType() == User.Type.VICE_MANAGER && (professionMapper.selectProfessionListByStoreIdAndManagerId(user.getStoreId(), user.getUserId())).getId().equals(typeId))) {
 //                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
 //                }
 //                return userMapper.selectUserListByProfession(typeId);
 //            case 3:
 //                if (user.getType() != User.Type.SUPER_ADMIN
 //                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))
+//                        && !(user.getType() == User.Type.VICE_MANAGER && (professionMapper.selectProfessionListByStoreIdAndManagerId(user.getStoreId(), user.getUserId())).getId().equals(typeId))
 //                        && !(user.getType() == User.Type.GROUP_MANAGER && user.getGroupId().equals(typeId))) {
 //                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
 //                }
 //                return userMapper.selectUserListByGroupId(typeId);
 //        }
-//        return userMapper.selectList(null);
-//    }
+        return userMapper.selectList(null);
+    }
 
     /**
      * 查询用户信息
