@@ -16,7 +16,7 @@ import lombok.experimental.Accessors;
 @Builder
 @ToString
 @Accessors(chain = true)
-@TableName("group_db")
+@TableName("group_tb")
 public class Group {
     /**
      * 小组id
