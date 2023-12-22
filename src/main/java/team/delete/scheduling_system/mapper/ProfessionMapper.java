@@ -8,8 +8,8 @@ import team.delete.scheduling_system.entity.Profession;
 import java.util.List;
 
 /**
- * @author cookie1551
- * @version 1.0
+ * @author cookie1551 Patrick_Star
+ * @version 1.1
  */
 @Mapper
 public interface ProfessionMapper extends BaseMapper<Profession> {
@@ -18,5 +18,5 @@ public interface ProfessionMapper extends BaseMapper<Profession> {
     List<Profession> selectProfessionListByStoreId(Integer storeId);
 
     @Select("SELECT * FROM profession WHERE profession.store_id = #{storeId} AND profession.manager_id = #{managerId}")
-    Profession selectProfessionListByStoreIdAndManagerId(Integer storeId, Integer managerId);
+    Profession selectProfessionByStoreIdAndManagerId(Integer storeId, Integer managerId);
 }

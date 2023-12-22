@@ -14,8 +14,8 @@ import team.delete.scheduling_system.mapper.UserMapper;
 import java.util.List;
 
 /**
- * @author cookie1551
- * @version 1.0
+ * @author cookie1551 Patrick_Star
+ * @version 1.1
  */
 @Service
 @RequiredArgsConstructor
@@ -87,7 +87,7 @@ public class ProfessionService{
         if (user.getType() != User.Type.MANAGER || !storeId.equals(user.getStoreId())) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        return professionMapper.selectProfessionListByStoreIdAndManagerId(storeId, managerId);
+        return professionMapper.selectProfessionByStoreIdAndManagerId(storeId, managerId);
     }
 
     /**
@@ -102,6 +102,10 @@ public class ProfessionService{
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         User user = userMapper.selectById(userId);
+        User manager = userMapper.selectById(professionAdd.getManagerId());
+        if (user == null || manager == null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
         if (user.getType() != User.Type.MANAGER || !professionAdd.getStoreId().equals(user.getStoreId())) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }

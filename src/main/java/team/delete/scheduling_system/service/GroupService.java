@@ -16,8 +16,8 @@ import team.delete.scheduling_system.mapper.UserMapper;
 import java.util.List;
 
 /**
- * @author cookie1551
- * @version 1.1
+ * @author cookie1551 Patrick_Star
+ * @version 1.2
  */
 @Service
 @RequiredArgsConstructor
@@ -40,7 +40,7 @@ public class GroupService {
         }
         User user = userMapper.selectById(userId);
         Group group = groupMapper.selectById(groupId);
-        Profession profession = professionMapper.selectProfessionListByStoreIdAndManagerId(user.getStoreId(), user.getUserId());
+        Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), user.getUserId());
         if (user.getType() != User.Type.VICE_MANAGER || !group.getType().equals(profession.getType()) || !group.getStoreId().equals(user.getStoreId())) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
@@ -60,8 +60,30 @@ public class GroupService {
         if (user.getType() != User.Type.VICE_MANAGER) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        Profession profession = professionMapper.selectProfessionListByStoreIdAndManagerId(user.getStoreId(), user.getUserId());
+        Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), user.getUserId());
+        if (profession == null) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
         return groupMapper.selectGroupList(profession.getType(), user.getStoreId());
+    }
+
+    /**
+     * 查询店铺某一工种的小组列表
+     *
+     * @param userId 操作的用户对象id
+     * @param type 操作的工种
+     * @param storeId 操作的店铺id
+     * @return 组别信息列表
+     */
+    public List<Group> fetchGroupListByTypeAndStoreId(Integer userId, User.Type type, Integer storeId) {
+        if (userId == null || type == null || storeId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user.getType() != User.Type.MANAGER && user.getType() != User.Type.SUPER_ADMIN) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        return groupMapper.selectGroupList(type, storeId);
     }
 
     /**
@@ -80,19 +102,40 @@ public class GroupService {
      * 增加组别信息
      * 只能新增操作用户所属门店所属工种的组别
      *
-     * @param userId  操作的用户对象id
-     * @param groupAdd 新增的组别对象
+     * @param userId  操作的用户id
+     * @param managerId 新增的组别负责人id
+     * @param name 新增的组别名称
      */
-    public void addGroup(Integer userId, Group groupAdd) {
+    public void addGroup(Integer userId, Integer managerId, String name) {
+        if (userId == null || managerId == null || name == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        User manager = userMapper.selectById(managerId);
+        if (manager == null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+        if (user.getType() != User.Type.VICE_MANAGER || manager.getType() != User.Type.GROUP_MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), user.getUserId());
+        Group groupAdd = Group.builder()
+                .storeId(user.getStoreId())
+                .managerId(managerId)
+                .name(name)
+                .type(profession.getType()).build();
+        groupMapper.insert(groupAdd);
+    }
+
+    private void checkParameter(Integer userId, Group groupAdd) {
         if (userId == null || groupAdd == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         User user = userMapper.selectById(userId);
-        Profession profession = professionMapper.selectProfessionListByStoreIdAndManagerId(user.getStoreId(), user.getUserId());
+        Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), user.getUserId());
         if (user.getType() != User.Type.VICE_MANAGER || !groupAdd.getType().equals(profession.getType()) || !groupAdd.getStoreId().equals(user.getStoreId())) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        groupMapper.insert(groupAdd);
     }
 
     /**
@@ -113,14 +156,7 @@ public class GroupService {
      * @param groupUpdate 更新的组别对象
      */
     public void updateGroup(Integer userId, Group groupUpdate) {
-        if (userId == null || groupUpdate == null) {
-            throw new AppException(ErrorCode.PARAM_ERROR);
-        }
-        User user = userMapper.selectById(userId);
-        Profession profession = professionMapper.selectProfessionListByStoreIdAndManagerId(user.getStoreId(), user.getUserId());
-        if (user.getType() != User.Type.VICE_MANAGER || !groupUpdate.getType().equals(profession.getType()) || !groupUpdate.getStoreId().equals(user.getStoreId())) {
-            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-        }
+        checkParameter(userId, groupUpdate);
         if (groupMapper.selectById(groupUpdate.getId()) == null) {
             throw new AppException(ErrorCode.GROUP_NOT_EXISTED);
         }

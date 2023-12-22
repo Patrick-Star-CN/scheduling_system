@@ -11,11 +11,13 @@ import team.delete.scheduling_system.exception.AppException;
 import team.delete.scheduling_system.mapper.StoreMapper;
 import team.delete.scheduling_system.mapper.UserMapper;
 
+import java.sql.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Devin100086
- * @version 1.0
+ * @author Devin100086 Patrick_Star
+ * @version 1.1
  */
 @Service
 @RequiredArgsConstructor
@@ -35,7 +37,7 @@ public class StoreService {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         User user = userMapper.selectById(userId);
-        if (user.getType() != User.Type.SUPER_ADMIN) {
+        if (user.getType() != User.Type.SUPER_ADMIN && user.getType() != User.Type.MANAGER) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
     }
@@ -48,14 +50,20 @@ public class StoreService {
      */
     public List<Store> fetchAllStore(Integer userId) {
         judgePermission(userId);
-        return storeMapper.selectList(null);
+        User user = userMapper.selectById(userId);
+        if (user.getType() == User.Type.SUPER_ADMIN) {
+            return storeMapper.selectList(null);
+        }
+        List<Store> list = new ArrayList<>();
+        list.add(storeMapper.selectById(user.getStoreId()));
+        return list;
     }
 
     /**
      * 增加门店信息
      *
-     * @param userId  操作的用户
-     * @param store 新增的门店对象
+     * @param userId 操作的用户
+     * @param store  新增的门店对象
      */
     public void addStore(Integer userId, Store store) {
         if (store == null) {
@@ -68,7 +76,7 @@ public class StoreService {
     /**
      * 删除门店信息
      *
-     * @param userId    操作的用户
+     * @param userId  操作的用户
      * @param storeId 新增的门店对象id
      */
     public void deleteStore(Integer userId, Integer storeId) {
@@ -82,8 +90,8 @@ public class StoreService {
     /**
      * 更新商店信息
      *
-     * @param userId  操作的用户
-     * @param store 新增的门店对象
+     * @param userId 操作的用户
+     * @param store  新增的门店对象
      */
     public void updateStore(Integer userId, Store store) {
         if (store == null) {

@@ -6,14 +6,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import team.delete.scheduling_system.entity.Profession;
+import team.delete.scheduling_system.entity.User;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 /**
- * @author cookie1551
- * @version 1.0
+ * @author cookie1551 Patrick_Star
+ * @version 1.1
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -23,10 +24,8 @@ public class ProfessionServiceTests {
 
     @Test
     public void testFetchAllProfession() {
-        List<Profession> professionList = professionService.fetchAllProfession(2);
-        professionList.forEach(profession -> {
-            assertEquals((Integer) 1, profession.getStoreId());
-        });
+        List<Profession> professionList = professionService.fetchAllProfession(1);
+        professionList.forEach(profession -> assertEquals((Integer) 1, profession.getStoreId()));
     }
 
     @Test
@@ -47,21 +46,21 @@ public class ProfessionServiceTests {
 
     @Test
     public void testAddProfession() {
-        professionService.addProfession(2,
+        professionService.addProfession(3,
                 Profession.builder()
                         .storeId(1)
                         .managerId(1)
-                        .type(Profession.Type.STORAGE).build());
+                        .type(User.Type.STORAGE).build());
     }
 
     @Test
     public void testUpdateProfession() {
-        professionService.updateProfession(2,
+        professionService.updateProfession(3,
                 Profession.builder()
-                        .id(4)
+                        .id(1)
                         .storeId(1)
                         .managerId(2)
-                        .type(Profession.Type.STORAGE).build());
+                        .type(User.Type.STORAGE).build());
     }
 
     @Test
