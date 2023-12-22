@@ -33,8 +33,7 @@ public class UserController {
     @ResponseBody
     @PostMapping("/login")
     public Object login(@RequestBody Map<String, String> map) {
-        userService.login(map.get("username"), map.get("password"));
-        return AjaxResult.SUCCESS();
+        return AjaxResult.SUCCESS(userService.login(map.get("username"), map.get("password")));
     }
 
 

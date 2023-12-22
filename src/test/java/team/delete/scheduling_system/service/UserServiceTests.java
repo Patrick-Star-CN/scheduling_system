@@ -67,7 +67,7 @@ public class UserServiceTests {
 
     @Test
     public void testLogin() {
-        userService.login("admin", "Admin123");
+        assertEquals(User.Type.SUPER_ADMIN, userService.login("Admin", "Admin123"));
     }
 
 //    @Test

@@ -37,7 +37,7 @@ public class UserService {
      * @param username 用户名
      * @param password 密码
      */
-    public void login(String username, String password) {
+    public User.Type login(String username, String password) {
         if (username == null || password == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
@@ -51,6 +51,7 @@ public class UserService {
             throw new AppException(ErrorCode.PASSWORD_ERROR);
         }
         StpUtil.login(user.getUserId());
+        return user.getType();
     }
 
     /**
