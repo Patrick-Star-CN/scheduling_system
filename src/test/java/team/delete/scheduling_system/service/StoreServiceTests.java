@@ -24,32 +24,23 @@ public class StoreServiceTests {
 
     @Test
     public void testAddStore() {
-        User user = User.builder().userId(1).name("wcq").password("123456").build();
-        user.setType(User.Type.SUPER_ADMIN);
         Store store = Store.builder().storeId(2).address("1234").size(12.2).name("wcq").build();
-        storeService.addStore(user, store);
+        storeService.addStore(1, store);
     }
 
     @Test
     public void testDeleteStore() {
-        User user = User.builder().userId(1).name("wcq").password("123456").build();
-        user.setType(User.Type.SUPER_ADMIN);
-        storeService.deleteStore(user, 1);
+        storeService.deleteStore(1, 1);
     }
 
     @Test
     public void testFetchStore() {
-        User user = User.builder().userId(1).name("wcq").password("123456").build();
-        user.setType(User.Type.SUPER_ADMIN);
-        List<Store> stores = storeService.fetchAllStore(user);
-        assertEquals(1, stores.size());
+        assertEquals(2, storeService.fetchAllStore(1).size());
     }
 
     @Test
     public void testUpdateStore() {
-        User user = User.builder().userId(1).name("wcq").password("123456").build();
-        user.setType(User.Type.SUPER_ADMIN);
         Store store = Store.builder().storeId(1).address("1234567").size(13.2).name("wcq").build();
-        storeService.updateStore(user, store);
+        storeService.updateStore(1, store);
     }
 }

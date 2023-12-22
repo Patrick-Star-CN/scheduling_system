@@ -1,5 +1,7 @@
 package team.delete.scheduling_system.entity;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Builder;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -13,6 +15,7 @@ import java.util.List;
 @Data
 @Builder
 @Accessors(chain = true)
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class PreferenceDetail {
     /**
      * 偏好类型
@@ -35,10 +38,6 @@ public class PreferenceDetail {
          * 工作日偏好
          */
         WORKDAY,
-        /**
-         * 工作时间偏好
-         */
-        TIME,
         /**
          * 班次时长偏好
          */

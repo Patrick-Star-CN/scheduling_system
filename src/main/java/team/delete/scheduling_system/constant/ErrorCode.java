@@ -42,6 +42,10 @@ public enum ErrorCode {
      * 用户偏好不存在
      */
     USER_PREFERENCE_ERROR(200107, "用户偏好不存在"),
+    /**
+     * 用户偏好已存在
+     */
+    USER_PREFERENCE_EXISTED(200108, "用户偏好已存在"),
 
     /**
      * 组别不存在
