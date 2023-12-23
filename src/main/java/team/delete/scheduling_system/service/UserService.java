@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.delete.scheduling_system.constant.ErrorCode;
 import team.delete.scheduling_system.constant.RegexPattern;
+import team.delete.scheduling_system.dto.UserInsertDto;
 import team.delete.scheduling_system.entity.Profession;
 import team.delete.scheduling_system.dto.UserDto;
 import team.delete.scheduling_system.entity.Store;
@@ -155,9 +156,22 @@ public class UserService {
      * @param userId  操作的用户id
      * @param userAdd 新增的用户对象
      */
-    public void addUser(Integer userId, User userAdd) {
-        checkPermission(userId, userAdd);
-        userMapper.insert(userAdd);
+    public void addUser(Integer userId, UserInsertDto userAdd) {
+        if (userId == null || userAdd == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        QueryWrapper<User> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("name", userAdd.getName());
+        if (userMapper.selectOne(queryWrapper) != null) {
+            throw new AppException(ErrorCode.USER_EXISTED);
+        }
+        User build = User.builder().name(userAdd.getName())
+                .groupId(userAdd.getGroupId())
+                .storeId(userAdd.getStoreId())
+                .password(userAdd.getName() + "123")
+                .type(userAdd.getType()).build();
+        checkPermission(userId, build);
+        userMapper.insert(build);
     }
 
     /**

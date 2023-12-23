@@ -21,5 +21,5 @@ public class UserDto {
     private Integer groupId;
     private String groupManagerName;
     private String type;
-    private String viceManagerName;
+    private String managerName;
 }

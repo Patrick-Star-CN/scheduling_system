@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.delete.scheduling_system.dto.AjaxResult;
+import team.delete.scheduling_system.dto.UserInsertDto;
 import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.service.UserService;
 
@@ -59,7 +60,7 @@ public class UserController {
      */
     @ResponseBody
     @PostMapping
-    public Object addUser(@RequestBody User user) {
+    public Object addUser(@RequestBody UserInsertDto user) {
         userService.addUser(StpUtil.getLoginIdAsInt(), user);
         return AjaxResult.SUCCESS();
     }
