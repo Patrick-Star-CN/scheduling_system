@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import team.delete.scheduling_system.dto.UserDto;
+import team.delete.scheduling_system.dto.UserInsertDto;
 import team.delete.scheduling_system.entity.User;
 
 import java.util.List;
@@ -25,13 +26,11 @@ public class UserServiceTests {
     @Test
     public void testAddUser() {
         userService.addUser(1,
-                User.builder()
-                        .userId(5)
-                        .name("李四")
-                        .password("12345678")
+                UserInsertDto.builder()
+                        .name("test")
                         .storeId(1)
                         .groupId(1)
-                        .type(User.Type.CUSTOMER_SERVICE).build());
+                        .type(User.Type.CASHIER).build());
     }
 
     @Test
