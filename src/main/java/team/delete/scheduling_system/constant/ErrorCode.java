@@ -5,8 +5,8 @@ import lombok.Getter;
 /**
  * 错误类型枚举类
  *
- * @author patrick_star
- * @version 1.4
+ * @author patrick_star YYHelen
+ * @version 1.5
  */
 @Getter
 public enum ErrorCode {
@@ -95,9 +95,37 @@ public enum ErrorCode {
     /**
      * 非法请求
      */
-    ILLEGAL_REQUEST(200404, "非法请求");
+    ILLEGAL_REQUEST(200404, "非法请求"),
 
+    /**
+     * 上级不存在
+     */
+    REVIEWER_NOT_EXISTED(200309, "上级不存在"),
 
+    /**
+     * 非法的请假时间
+     */
+    ILLEGAL_LEAVE_TIME(200310, "非法的请假时间"),
+
+    /**
+     * 用户信息不完整
+     */
+    INCOMPLETE_USER_INFOEMATION(200311, "用户信息不完整"),
+
+    /**
+     * 请假记录不存在
+     */
+    LEAVE_RECORD_NOT_EXISTED(200312, "请假记录不存在"),
+
+    /**
+     * 输入的时间区间无效
+     */
+    USELESS_TIME_RANGE(200313, "输入的时间区间无效"),
+
+    /**
+     * 输入的时间区间无效
+     */
+    REPEAT_LEAVE_RECORD(200314, "重复请假");
     private final Integer code;
     private final String message;
 
