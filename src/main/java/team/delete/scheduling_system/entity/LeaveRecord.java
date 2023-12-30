@@ -45,7 +45,7 @@ public class LeaveRecord {
      */
     Timestamp reviewTime;
     /**
-     * 请假审核状态
+     * 请假审核完成时间
      */
     Type type;
     public enum Type {
@@ -62,4 +62,8 @@ public class LeaveRecord {
          */
         REJECT;
     }
+    Integer scheduleShift;
+    /**
+     * 请假审核状态
+     */
 }
