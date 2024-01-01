@@ -28,10 +28,11 @@ public class LeaveServiceTests {
     }
 
     @Test
-    public void testFindLeaveRecordByTime(){
+    public void testFindLeaveRecordByShift(){
         Integer userId=2;
-        LocalDate time=LocalDate.of(2023, 10, 11);
-        LeaveRecord leaveRecord=leaveRecordService.findLeaveRecordByTime(userId,time);
+        LocalDate time=LocalDate.of(2023, 12,30);
+        Integer scheduleShift=0;
+        LeaveRecord leaveRecord=leaveRecordService.findLeaveRecordByShift(userId,time,scheduleShift);
         System.out.println(leaveRecord);
         assertEquals(userId,leaveRecord.getRequestPersonId());
     }
@@ -48,35 +49,36 @@ public class LeaveServiceTests {
     }
 
     @Test
-    public void testDeleteLeaveRecord(){
+    public void testDeleteLeaveRecordByRecordId(){
         Integer requestPersonId=2;
         Integer reviewerId=7;
-        leaveRecordService.deleteLeaveRecord(requestPersonId,2);
-        leaveRecordService.deleteLeaveRecord(requestPersonId,4);
+        leaveRecordService.deleteLeaveRecordByRecordId(requestPersonId,7);
+        leaveRecordService.deleteLeaveRecordByRecordId(requestPersonId,11);
     }
 
     @Test
     public void testAddLeaveRecord(){
+        Integer scheduleShift=1;
         //普通员工添加
         Integer requestPersonId=2;
         LocalDate leaveTime=LocalDate.of(2024,1,2);
-        leaveRecordService.addLeaveRecord(requestPersonId,leaveTime);
+        leaveRecordService.addLeaveRecord(requestPersonId,leaveTime,scheduleShift);
         //小组长添加
         requestPersonId=7;
         leaveTime=LocalDate.of(2024,1,15);
-        leaveRecordService.addLeaveRecord(requestPersonId,leaveTime);
+        leaveRecordService.addLeaveRecord(requestPersonId,leaveTime,scheduleShift);
         //副经理添加
         requestPersonId=7;
         leaveTime=LocalDate.of(2024,1,21);
-        leaveRecordService.addLeaveRecord(requestPersonId,leaveTime);
+        leaveRecordService.addLeaveRecord(requestPersonId,leaveTime,scheduleShift);
     }
 
     @Test
     public void testDeleteLeaveRecordByTime(){
-        //普通员工添加
         Integer requestPersonId=2;
-        LocalDate leaveTime=LocalDate.of(2023,12,31);
-        leaveRecordService.deleteLeaveRecordByTime(requestPersonId,leaveTime);
+        Integer scheduleShift=1;
+        LocalDate leaveTime=LocalDate.of(2024,1,2);
+        leaveRecordService.deleteLeaveRecordByTime(requestPersonId,leaveTime,scheduleShift);
     }
 
     @Test
@@ -100,11 +102,21 @@ public class LeaveServiceTests {
     }
 
     @Test
+    public void testFetchAllReviewLeaveRecord(){
+        Integer userId=7;
+        List<LeaveRecord> leaveRecordList=leaveRecordService.fetchAllReviewLeaveRecord(userId);
+        for (LeaveRecord leaveRecord : leaveRecordList) {
+            System.out.println(leaveRecord);
+        }
+    }
+
+    @Test
     public void testReviewLeaveRecord(){
         boolean result=false;
         Integer userId=7;
-        Integer recordId=11;
+        Integer recordId=15;
         leaveRecordService.reviewLeaveRecord(userId,recordId,result);
+        leaveRecordService.reviewLeaveRecord(userId,16,!result);
     }
 
 

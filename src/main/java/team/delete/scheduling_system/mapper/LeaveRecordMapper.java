@@ -3,6 +3,7 @@ package team.delete.scheduling_system.mapper;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
+import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
 import team.delete.scheduling_system.entity.LeaveRecord;
 import team.delete.scheduling_system.entity.User;
 
@@ -22,9 +23,10 @@ public interface LeaveRecordMapper  extends BaseMapper<LeaveRecord> {
     @Select("SELECT * FROM leave_record WHERE leave_record.request_person_id = #{userId}")
     List<LeaveRecord> selectLeaveRecordListByUserId(Integer userId);
 
-    @Select("SELECT * FROM leave_record WHERE leave_record.request_person_id = #{userId} " +
-            "AND leave_record.leave_time = #{leaveTime}")
-    LeaveRecord selectLeaveRecordByDate(Integer userId, LocalDate leaveTime);
+    @Select("SELECT * FROM leave_record WHERE request_person_id = #{userId} AND" +
+            " leave_time = #{leaveTime} AND" +
+            " schedule_shift=#{scheduleShift}")
+    LeaveRecord selectLeaveRecordByShift(Integer userId, LocalDate leaveTime, Integer scheduleShift);
 
     @Select("SELECT * FROM user_details_view WHERE user_id = #{userId}"+
             "AND leave_record.date = profession.type ")
@@ -48,8 +50,6 @@ public interface LeaveRecordMapper  extends BaseMapper<LeaveRecord> {
     @Select("SELECT user_id FROM user WHERE type = 'SUPER_ADMIN'" )
     Integer findSuperAdmin();
 
-    @Select("SELECT * FROM leave_record WHERE user_id=type = #{userId}")
-    List<LeaveRecord> fetchLeaveRecordByReviewerId(Integer userId);
 
     @Select("SELECT * FROM leave_record WHERE record_id=#{recordId}")
     LeaveRecord selectLeaveRecordByRecordId(Integer recordId);
@@ -65,5 +65,16 @@ public interface LeaveRecordMapper  extends BaseMapper<LeaveRecord> {
             "leave_time BETWEEN '${startTime}' AND '${endTime}'")
     List<LeaveRecord> selectLeaveRecordListByRange(Integer userId, LocalDate startTime, LocalDate endTime);
 
-    void updateLeaveRecord(Integer recordId);
+    @Select("SELECT * FROM leave_record WHERE request_person_id = ${requestPersonId} AND" +
+            " leave_time=#{leaveTime} AND" +
+            " schedule_shift=#{scheduleShift}")
+    LeaveRecord selectLeaveRecordByDateShift(Integer requestPersonId, LocalDate leaveTime, Integer scheduleShift);
+
+    @Select("SELECT * FROM leave_record WHERE request_person_id = ${userId} AND " +
+            "leave_time=#{leaveTime} ")
+    List<LeaveRecord> selectLeaveRecordByDate(Integer userId, LocalDate leaveTime);
+
+    @Select("SELECT * FROM leave_record WHERE reviewer_person_id= #{userId} AND" +
+            " type=NOT_PROCEED")
+    List<LeaveRecord> selectNeedReviewLeaveRecordListByUserId(Integer userId);
 }

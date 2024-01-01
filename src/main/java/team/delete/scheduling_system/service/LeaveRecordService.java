@@ -55,13 +55,31 @@ public class LeaveRecordService {
     }
 
     /**
-     * 查询自己的特定请假记录
+     * 查询自己的具体某一天某个班次请假记录
+     *
+     * @param userId 请假人id
+     * @param leaveTime 申请的请假时间
+     * @param scheduleShift 申请请假的排班班次
+     * @return 请假记录列表
+     */
+    public LeaveRecord findLeaveRecordByShift(Integer userId, LocalDate leaveTime, Integer scheduleShift) {
+        if (userId == null||leaveTime==null||scheduleShift==null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        if(userMapper.selectUserByUserId(userId)==null){
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+        return leaveRecordMapper.selectLeaveRecordByShift(userId, leaveTime, scheduleShift);
+    }
+
+    /**
+     * 查询自己的具体某一天请假记录
      *
      * @param userId 请假人id
      * @param leaveTime 申请的请假时间
      * @return 请假记录列表
      */
-    public LeaveRecord findLeaveRecordByTime(Integer userId, LocalDate leaveTime) {
+    public List<LeaveRecord> findLeaveRecordByDate(Integer userId, LocalDate leaveTime) {
         if (userId == null||leaveTime==null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
@@ -97,8 +115,9 @@ public class LeaveRecordService {
      *
      * @param userId 删除人id
      * @param recordId 请假记录id
+     *
      */
-    public void deleteLeaveRecord(Integer userId,Integer recordId){
+    public void deleteLeaveRecordByRecordId(Integer userId,Integer recordId){
         if(userId==null||recordId==null){
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
@@ -123,16 +142,17 @@ public class LeaveRecordService {
      * 根据请假时间删除未审核的记录
      *
      * @param userId 删除人id
-     * @param leaveTime 请假记录id
+     * @param leaveTime 请假时间
+     * @param scheduleShift 请假的班次
      */
-    public void deleteLeaveRecordByTime (Integer userId,LocalDate leaveTime){
+    public void deleteLeaveRecordByTime (Integer userId, LocalDate leaveTime, Integer scheduleShift){
         if(userId==null||leaveTime==null){
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         if(userMapper.selectUserByUserId(userId)==null){
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
-        LeaveRecord leaveRecord=findLeaveRecordByTime(userId,leaveTime);
+        LeaveRecord leaveRecord=findLeaveRecordByShift(userId,leaveTime,scheduleShift);
         if(leaveRecord==null){
             throw new AppException(ErrorCode. LEAVE_RECORD_NOT_EXISTED);
         }
@@ -152,7 +172,7 @@ public class LeaveRecordService {
      * @param requestPersonId 用户id
      * @param leaveTime 请假人需要的请假时间
      */
-    public void addLeaveRecord(Integer requestPersonId, LocalDate leaveTime){
+    public void addLeaveRecord(Integer requestPersonId, LocalDate leaveTime, Integer scheduleShift){
         //输入参数不能为0
         if (requestPersonId == null||leaveTime==null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
@@ -167,7 +187,7 @@ public class LeaveRecordService {
         if(requestPerson==null){
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
-        if(leaveRecordMapper.selectLeaveRecordByDate(requestPersonId,leaveTime)!=null) {
+        if(leaveRecordMapper.selectLeaveRecordByDateShift(requestPersonId,leaveTime, scheduleShift)!=null) {
             throw new AppException(ErrorCode.REPEAT_LEAVE_RECORD);
         }
         String requestPersonType=requestPerson.getType();
@@ -205,7 +225,8 @@ public class LeaveRecordService {
         LeaveRecord build=LeaveRecord.builder().requestPersonId(requestPersonId)
                 .reviewerPersonId(reviewerId)
                 .leaveTime(leaveTime)
-                .type(LeaveRecord.Type.NOT_PROCEED).build();
+                .type(LeaveRecord.Type.NOT_PROCEED)
+                .scheduleShift(scheduleShift).build();
 
         leaveRecordMapper.insert(build);
     }
@@ -249,6 +270,30 @@ public class LeaveRecordService {
         if(userType=="CASHIER"||userType=="CUSTOMER_SERVICE"||userType=="STORAGE"){
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
+        return leaveRecordMapper.selectNeedReviewLeaveRecordListByUserId(userId);
+    }
+
+    /**
+     * 查询审核的请假记录(包括已审核和未审核的）
+     *
+     * @param userId 审核人id
+     * @return 请假记录列表
+     */
+    public List<LeaveRecord> fetchAllReviewLeaveRecord(Integer userId){
+        if(userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        UserDto userDto=userMapper.selectUserByUserId(userId);
+        if(userDto==null){
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+        String userType=userDto.getType();
+        if(userType==null){
+            throw new AppException(ErrorCode.INCOMPLETE_USER_INFOEMATION);
+        }
+        if(userType=="CASHIER"||userType=="CUSTOMER_SERVICE"||userType=="STORAGE"){
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
         return leaveRecordMapper.selectReviewLeaveRecordListByUserId(userId);
     }
 
@@ -275,6 +320,10 @@ public class LeaveRecordService {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
         LeaveRecord updateLeaveRecord=leaveRecord;
+        Date currentDate = new Date();
+        Timestamp currentTimestamp = new Timestamp(currentDate.getTime());
+        // 将Timestamp对象设置到leaveRecord中的reviewTime属性
+        leaveRecord.setReviewTime(currentTimestamp);
         if(result){
             updateLeaveRecord.setType(LeaveRecord.Type.PASS);
         }
