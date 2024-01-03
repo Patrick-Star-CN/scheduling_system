@@ -25,21 +25,21 @@ public class Group {
      * 小组id
      */
     @TableId(type = IdType.AUTO)
-    Integer id;
+    private Integer id;
     /**
      * 门店id
      */
-    Integer storeId;
+    private Integer storeId;
     /**
      * 主管id
      */
-    Integer managerId;
+    private Integer managerId;
     /**
      * 小组名
      */
-    String name;
+    private String name;
     /**
      * 工种
      */
-    User.Type type;
+    private User.Type type;
 }

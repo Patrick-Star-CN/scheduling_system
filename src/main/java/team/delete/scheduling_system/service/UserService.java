@@ -130,7 +130,7 @@ public class UserService {
      * @param userId 查询的用户对象id
      * @return 用户信息列表
      */
-    private User fetchUserByUserId(Integer userId) {
+    public User fetchUserByUserId(Integer userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }

@@ -15,15 +15,15 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 public class RuleDetail {
     /**
-     * 开店前或关店后的若干小时
+     * 开店前或关店后的若干分钟
      */
-    private Double time;
+    private Integer time;
     /**
      * 至少要的人数
      */
     private Integer count;
     /**
-     * 每个员工对应的单位
+     * 每 formula 个面积需要一个员工
      */
     private Double formula;
 }

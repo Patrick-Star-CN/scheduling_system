@@ -29,20 +29,20 @@ public class StoreRuleServiceTests {
 
     @Test
     public void testInsertRule() {
-        storeRuleService.insertRule(1, Rule.builder()
-                .storeId(2)
+        storeRuleService.insertRule(3, Rule.builder()
+                .storeId(1)
                 .closeStore(RuleDetail.builder()
-                        .count(1)
+                        .count(5)
                         .formula(3.5)
-                        .time(1.5).build())
+                        .time(90).build())
                 .openStore(RuleDetail.builder()
-                        .count(1)
+                        .count(5)
                         .formula(3.5)
-                        .time(1.5).build())
+                        .time(90).build())
                 .passenger(RuleDetail.builder()
-                        .count(1)
+                        .count(5)
                         .formula(3.5)
-                        .time(1.5).build()).build());
+                        .time(0).build()).build());
     }
 
     @Test
@@ -51,14 +51,14 @@ public class StoreRuleServiceTests {
         ruleDetailMap.put(1, RuleDetail.builder()
                 .count(1)
                 .formula(2.5)
-                .time(4.5).build());
+                .time(60).build());
 
         storeRuleService.updateRule(1, ruleDetailMap,2);
     }
 
     @Test
     public void testGetRule() {
-        assertEquals("65831f40e9ddcc228fbb6e08", storeRuleService.fetchRule(1, 2).getRuleId());
+        assertEquals(1, storeRuleService.fetchRule(3, 1).getStoreId().intValue());
     }
 
     @Test

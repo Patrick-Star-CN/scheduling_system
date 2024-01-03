@@ -20,17 +20,17 @@ public class Profession {
      * 工种id
      */
     @TableId(type = IdType.AUTO)
-    Integer id;
+    private Integer id;
     /**
      * 门店id
      */
-    Integer storeId;
+    private Integer storeId;
     /**
      * 主管id
      */
-    Integer managerId;
+    private Integer managerId;
     /**
      * 工种
      */
-    User.Type type;
+    private User.Type type;
 }

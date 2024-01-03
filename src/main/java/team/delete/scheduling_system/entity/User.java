@@ -23,27 +23,28 @@ public class User {
      * 用户id
      */
     @TableId(type = IdType.AUTO)
-    Integer userId;
+    private Integer userId;
     /**
      * 用户名
      */
-    String name;
+    private String name;
     /**
      * 密码
      */
-    String password;
-    /**
-     * 门店id
-     */
-    Integer storeId;
-    /**
-     * 小组id
-     */
-    Integer groupId;
+    private String password;
     /**
      * 雇员职位
      */
-    Type type;
+    private Type type;
+    /**
+     * 门店id
+     */
+    private Integer storeId;
+    /**
+     * 小组id
+     */
+    private Integer groupId;
+
 
     public enum Type {
         /**
