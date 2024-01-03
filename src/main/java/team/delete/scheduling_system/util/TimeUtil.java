@@ -1,5 +1,6 @@
 package team.delete.scheduling_system.util;
 
+import java.sql.Time;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,6 +21,17 @@ public class TimeUtil {
      */
     public static String getFormattedTime(Date date) {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return formatter.format(date);
+    }
+
+    /**
+     * 传入日期类生成格式化的时间字符串
+     *
+     * @param date 日期类
+     * @return 格式化的时间字符串
+     */
+    public static String getFormattedOnlyTime(Date date) {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
         return formatter.format(date);
     }
 
@@ -54,6 +66,18 @@ public class TimeUtil {
     public static Date tranStringToDate(String dateStr) throws ParseException {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         return formatter.parse(dateStr);
+    }
+
+    /**
+     * 传入日期字符串生成日期类
+     *
+     * @param dateStr 日期字符串
+     * @return 日期类
+     * @throws ParseException 日期转化异常
+     */
+    public static Time tranStringToTime(String dateStr) throws ParseException {
+        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm:ss");
+        return new Time(formatter.parse(dateStr).getTime());
     }
 
     public static Date now() {

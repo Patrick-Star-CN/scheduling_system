@@ -125,7 +125,17 @@ public enum ErrorCode {
     /**
      * 输入的时间区间无效
      */
-    REPEAT_LEAVE_RECORD(200314, "重复请假");
+    REPEAT_LEAVE_RECORD(200314, "重复请假"),
+
+    /**
+     * 客流信息不存在
+     */
+    CUSTOMER_FLOW_NOT_EXISTED(200315, "客流信息不存在"),
+
+    /**
+     * 门店规则不存在
+     */
+    STORE_RULE_NOT_EXISTED(200316, "门店规则不存在");
     private final Integer code;
     private final String message;
 

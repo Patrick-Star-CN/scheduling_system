@@ -27,26 +27,26 @@ public class Rule {
     @Id
     @MongoId
     @Field("rule_id")
-    String ruleId;
+    private String ruleId;
     /**
      * 开店规则
      */
     @Field("open_store")
-    RuleDetail openStore;
+    private RuleDetail openStore;
     /**
      * 闭店规则
      */
     @Field("close_store")
-    RuleDetail closeStore;
+    private RuleDetail closeStore;
     /**
      * 客流规则
      */
     @Field("passenger")
-    RuleDetail passenger;
+    private RuleDetail passenger;
     /**
      * 门店id
      */
     @Field("store_id")
-    Integer storeId;
+    private Integer storeId;
 }
 

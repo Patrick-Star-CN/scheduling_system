@@ -43,6 +43,20 @@ public class StoreService {
     }
 
     /**
+     * 判断门店是否存在
+     *
+     * @param storeId 门店id
+     * @return 门店对象
+     */
+    public Store getStoreById(Integer storeId) {
+        Store store = storeMapper.selectById(storeId);
+        if (store == null) {
+            throw new AppException(ErrorCode.STORE_NOT_EXISTED);
+        }
+        return store;
+    }
+
+    /**
      * 查询所有门店
      *
      * @param userId 操作的用户

@@ -39,7 +39,7 @@ public class StoreRuleService {
      *
      * @param userId 需要判断权限的用户id
      */
-    private void judgePermission(Integer userId, Integer storeId) {
+    public void judgePermission(Integer userId, Integer storeId) {
         User user = userMapper.selectById(userId);
         if (user == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);

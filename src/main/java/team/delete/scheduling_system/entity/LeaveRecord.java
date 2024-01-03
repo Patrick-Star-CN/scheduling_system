@@ -27,27 +27,27 @@ public class LeaveRecord {
      * 审核记录id
      */
     @TableId(type = IdType.AUTO)
-    Integer recordId;
+    private Integer recordId;
     /**
      * 请假人id
      */
-    Integer requestPersonId;
+    private Integer requestPersonId;
     /**
      * 审核人id
      */
-    Integer reviewerPersonId;
+    private Integer reviewerPersonId;
     /**
      * 请假时间
      */
-    LocalDate leaveTime;
+    private LocalDate leaveTime;
     /**
      * 请假审核完成时间
      */
-    Timestamp reviewTime;
+    private Timestamp reviewTime;
     /**
      * 请假审核状态
      */
-    Type type;
+    private Type type;
     public enum Type {
         /**
          * 未审核
