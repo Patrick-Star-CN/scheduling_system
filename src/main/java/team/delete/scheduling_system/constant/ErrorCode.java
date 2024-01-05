@@ -135,7 +135,12 @@ public enum ErrorCode {
     /**
      * 门店规则不存在
      */
-    STORE_RULE_NOT_EXISTED(200316, "门店规则不存在");
+    STORE_RULE_NOT_EXISTED(200316, "门店规则不存在"),
+
+    /**
+     * 班次不存在
+     */
+    SHIFT_NOT_EXISTED(200317, "班次不存在");
     private final Integer code;
     private final String message;
 

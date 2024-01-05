@@ -11,7 +11,7 @@ import java.io.IOException;
  */
 public class FileUtil {
     public static File convertToFile(MultipartFile multipartFile) throws IOException {
-        File file = new File("tmp/" + multipartFile.getOriginalFilename());
+        File file = new File("/home/ubuntu/sc/tmp/" + multipartFile.getOriginalFilename());
         multipartFile.transferTo(file);
         return file;
     }

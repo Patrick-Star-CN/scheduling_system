@@ -5,8 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.delete.scheduling_system.dto.AjaxResult;
+import team.delete.scheduling_system.entity.RuleDetail;
 import team.delete.scheduling_system.entity.Store;
+import team.delete.scheduling_system.service.StoreRuleService;
 import team.delete.scheduling_system.service.StoreService;
+
+import java.util.Map;
 
 /**
  * @author Patrick_Star
@@ -19,6 +23,8 @@ import team.delete.scheduling_system.service.StoreService;
 @RequiredArgsConstructor
 public class StoreController {
     final StoreService storeService;
+
+    final StoreRuleService storeRuleService;
 
     /**
      * 查询所有门店接口
@@ -68,6 +74,30 @@ public class StoreController {
     public Object deleteStore(@PathVariable Integer id) {
         storeService.deleteStore(StpUtil.getLoginIdAsInt(), id);
         return AjaxResult.SUCCESS();
+    }
+
+    /**
+     * 改动门店规则接口
+     *
+     * @param map 参数形式传入的门店规则对象
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @PostMapping("/rule")
+    public Object addRule(@RequestBody Map<String, RuleDetail> map) {
+        storeRuleService.insertRule(StpUtil.getLoginIdAsInt(), map.get("open_store"), map.get("close_store"), map.get("passenger"));
+        return AjaxResult.SUCCESS();
+    }
+
+    /**
+     * 查询门店规则接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/rule")
+    public Object fetchRule() {
+        return AjaxResult.SUCCESS(storeRuleService.fetchRule(StpUtil.getLoginIdAsInt()));
     }
 
 }
