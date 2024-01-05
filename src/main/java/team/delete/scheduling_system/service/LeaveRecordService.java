@@ -130,8 +130,8 @@ public class LeaveRecordService {
             throw new AppException(ErrorCode.LEAVE_RECORD_NOT_EXISTED);
         }
         Integer requestPersonId = leaveRecord.getRequestPersonId();
-        Integer reviewerPersonID = leaveRecord.getReviewerPersonId();
-        if (userId.equals(reviewerPersonID) || userId.equals(requestPersonId)) {
+        Integer reviewerPersonId = leaveRecord.getReviewerPersonId();
+        if (userId.equals(reviewerPersonId) || userId.equals(requestPersonId)) {
             leaveRecordMapper.deleteById(leaveRecord);
         } else {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
@@ -157,8 +157,8 @@ public class LeaveRecordService {
             throw new AppException(ErrorCode.LEAVE_RECORD_NOT_EXISTED);
         }
         Integer requestPersonId = leaveRecord.getRequestPersonId();
-        Integer reviewerPersonID = leaveRecord.getReviewerPersonId();
-        if (userId.equals(reviewerPersonID) || userId.equals(requestPersonId)) {
+        Integer reviewerPersonId = leaveRecord.getReviewerPersonId();
+        if (userId.equals(reviewerPersonId) || userId.equals(requestPersonId)) {
             leaveRecordMapper.deleteById(leaveRecord);
         } else {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
@@ -203,7 +203,7 @@ public class LeaveRecordService {
             throw new AppException(ErrorCode.INCOMPLETE_USER_INFOEMATION);
         }
 
-        List<Schedule> scheduleList = mongoTemplate.find(new Query(Criteria.where("store_id").is(storeId)), Schedule.class);
+        List<Schedule> scheduleList = mongoTemplate.find(new Query(Criteria.where("store_id").is(storeId.toString())), Schedule.class);
         if (scheduleList.isEmpty()) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
@@ -379,8 +379,8 @@ public class LeaveRecordService {
         leaveRecordMapper.updateById(leaveRecord);
         if (result) {
             int dayOfWeek = leaveRecord.getLeaveTime().getDayOfWeek().getValue() - 1;
-            Schedule schedule = mongoTemplate.find(new Query(Criteria.where("store_id").is(leaveRecord.getRequestPersonId())), Schedule.class).get(dayOfWeek);
             UserDto user = userMapper.selectUserByUserId(leaveRecord.getRequestPersonId());
+            Schedule schedule = mongoTemplate.find(new Query(Criteria.where("store_id").is(user.getStoreId().toString())), Schedule.class).get(dayOfWeek);
             switch (user.getType()) {
                 case "CASHIER":
                     for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getCashierList()) {
@@ -407,6 +407,7 @@ public class LeaveRecordService {
                     }
                     break;
             }
+            mongoTemplate.save(schedule);
         }
     }
 }
