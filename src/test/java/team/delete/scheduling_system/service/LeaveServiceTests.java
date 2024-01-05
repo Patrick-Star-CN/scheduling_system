@@ -112,10 +112,10 @@ public class LeaveServiceTests {
     @Test
     public void testReviewLeaveRecord() {
         boolean result = false;
-        Integer userId = 7;
-        Integer recordId = 15;
-        leaveRecordService.reviewLeaveRecord(userId, recordId, result);
-        leaveRecordService.reviewLeaveRecord(userId, 16, !result);
+        Integer userId = 9;
+        Integer recordId = 2;
+//        leaveRecordService.reviewLeaveRecord(userId, recordId, result);
+        leaveRecordService.reviewLeaveRecord(userId, recordId, !result);
     }
 
 
