@@ -24,12 +24,22 @@ public class ShiftServiceTests {
     }
 
     @Test
-    public void testDeleteShift() {
+    public void testFetchShift() {
         assertEquals("1", shiftService.fetchShift(1, 1).getStoreId());
     }
 
     @Test
     public void testInitSchedule() {
         shiftService.initSchedule(3, 1);
+    }
+
+    @Test
+    public void testFetchSchedule() {
+        assertEquals("1", shiftService.fetchScheduleByDay(1, 1, 1).getStoreId());
+    }
+
+    @Test
+    public void testFetchScheduleList() {
+        assertEquals("1", shiftService.fetchScheduleList(1, 1).get(0).getStoreId());
     }
 }

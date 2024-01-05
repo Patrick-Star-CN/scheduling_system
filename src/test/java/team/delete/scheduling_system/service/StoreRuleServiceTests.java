@@ -29,40 +29,28 @@ public class StoreRuleServiceTests {
 
     @Test
     public void testInsertRule() {
-        storeRuleService.insertRule(3, Rule.builder()
-                .storeId(1)
-                .closeStore(RuleDetail.builder()
+        storeRuleService.insertRule(3,
+                RuleDetail.builder()
                         .count(5)
                         .formula(3.5)
-                        .time(90).build())
-                .openStore(RuleDetail.builder()
+                        .time(90).build(),
+                RuleDetail.builder()
                         .count(5)
                         .formula(3.5)
-                        .time(90).build())
-                .passenger(RuleDetail.builder()
+                        .time(90).build(),
+                RuleDetail.builder()
                         .count(5)
                         .formula(3.5)
-                        .time(0).build()).build());
-    }
-
-    @Test
-    public void testUpdateRule() {
-        Map<Integer, RuleDetail> ruleDetailMap = new HashMap<>();
-        ruleDetailMap.put(1, RuleDetail.builder()
-                .count(1)
-                .formula(2.5)
-                .time(60).build());
-
-        storeRuleService.updateRule(1, ruleDetailMap,2);
+                        .time(0).build());
     }
 
     @Test
     public void testGetRule() {
-        assertEquals(1, storeRuleService.fetchRule(3, 1).getStoreId().intValue());
+        assertEquals(1, storeRuleService.fetchRule(3).getStoreId().intValue());
     }
 
     @Test
     public void testRemoveRule() {
-        storeRuleService.deleteRule(1, "65831f40e9ddcc228fbb6e08");
+        storeRuleService.deleteRule(1);
     }
 }

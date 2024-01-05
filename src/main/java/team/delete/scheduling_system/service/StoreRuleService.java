@@ -16,6 +16,7 @@ import team.delete.scheduling_system.exception.AppException;
 import team.delete.scheduling_system.mapper.StoreMapper;
 import team.delete.scheduling_system.mapper.UserMapper;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -39,12 +40,12 @@ public class StoreRuleService {
      *
      * @param userId 需要判断权限的用户id
      */
-    public void judgePermission(Integer userId, Integer storeId) {
+    public void judgePermission(Integer userId) {
         User user = userMapper.selectById(userId);
         if (user == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
-        if (user.getType() != User.Type.MANAGER || !storeId.equals(user.getStoreId())) {
+        if (user.getType() != User.Type.MANAGER) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
     }
@@ -64,64 +65,41 @@ public class StoreRuleService {
     /**
      * 插入门店规则
      *
-     * @param userId 操作的用户id
-     * @param rule 规则对象
+     * @param userId     操作的用户id
+     * @param openStore  开店规则
+     * @param closeStore 关店规则
+     * @param passenger  客流规则
      */
-    public void insertRule(Integer userId, Rule rule) {
-        if (rule == null) {
+    public void insertRule(Integer userId, RuleDetail openStore, RuleDetail closeStore, RuleDetail passenger) {
+        if (openStore == null || closeStore == null || passenger == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
-        judgeStoreExist(rule.getStoreId());
-        judgePermission(userId, rule.getStoreId());
-        mongoTemplate.save(rule);
+        judgePermission(userId);
+        User user = userMapper.selectById(userId);
+        if (fetchRule(userId) != null) {
+            deleteRule(userId);
+        }
+
+        mongoTemplate.save(Rule.builder()
+                .storeId(user.getStoreId())
+                .openStore(openStore)
+                .closeStore(closeStore)
+                .passenger(passenger).build());
     }
 
     /**
      * 删除门店规则
      *
      * @param userId 操作的用户id
-     * @param ruleId 规则对象id
      */
-    public void deleteRule(Integer userId, String ruleId) {
-        if (ruleId == null) {
-            throw new AppException(ErrorCode.PARAM_ERROR);
-        }
-        Rule rule = mongoTemplate.findById(ruleId, Rule.class);
+    public void deleteRule(Integer userId) {
+        judgePermission(userId);
+        User user = userMapper.selectById(userId);
+        Rule rule = mongoTemplate.findOne(new Query(Criteria.where("store_id").is(user.getStoreId())), Rule.class);
         if (rule == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
-        judgeStoreExist(rule.getStoreId());
-        judgePermission(userId, rule.getStoreId());
-        Criteria criteria = Criteria.where("_id").is(ruleId);
-        // 创建查询对象，然后将条件对象添加到其中
-        Query query = Query.query(criteria);
-        mongoTemplate.remove(query, Rule.class);
-    }
-
-    /**
-     * 修改门店规则
-     *
-     * @Param userId 操作的用户
-     * @Param rule 规则对象
-     */
-    public void updateRule(Integer userId, Map<Integer, RuleDetail> ruleDetailMap, Integer storeId) {
-        Criteria criteria = Criteria.where("store_id").is(storeId);
-        Query query = new Query(criteria);
-        Rule rule = mongoTemplate.findOne(query, Rule.class);
-        if (rule == null) {
-            throw new AppException(ErrorCode.PARAM_ERROR);
-        }
-        judgePermission(userId, rule.getStoreId());
-        if (ruleDetailMap.get(0) != null) {
-            rule.setCloseStore(ruleDetailMap.get(0));
-        }
-        if (ruleDetailMap.get(1) != null) {
-            rule.setOpenStore(ruleDetailMap.get(1));
-        }
-        if (ruleDetailMap.get(2) != null) {
-            rule.setPassenger(ruleDetailMap.get(2));
-        }
-        mongoTemplate.save(rule);
+        mongoTemplate.remove(new Query(Criteria.where("_id").is(rule.getRuleId())), Rule.class);
     }
 
     /**
@@ -130,14 +108,9 @@ public class StoreRuleService {
      * @Param userId 操作的用户
      * @Param storeId 门店id
      */
-    public Rule fetchRule(Integer userId, Integer storeId) {
-        if (storeId == null) {
-            throw new AppException(ErrorCode.PARAM_ERROR);
-        }
-        judgeStoreExist(storeId);
-        judgePermission(userId, storeId);
-        Criteria criteria = Criteria.where("store_id").is(storeId);
-        Query query = new Query(criteria);
-        return mongoTemplate.findOne(query, Rule.class);
+    public Rule fetchRule(Integer userId) {
+        judgePermission(userId);
+        User user = userMapper.selectById(userId);
+        return mongoTemplate.findOne(new Query(Criteria.where("store_id").is(user.getStoreId())), Rule.class);
     }
 }
