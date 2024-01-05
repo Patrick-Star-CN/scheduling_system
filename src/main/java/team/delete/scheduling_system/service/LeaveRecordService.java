@@ -1,18 +1,18 @@
 package team.delete.scheduling_system.service;
 
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
-import org.apache.ibatis.annotations.Case;
 import org.springframework.cache.annotation.CacheConfig;
-import org.springframework.data.mongodb.core.aggregation.ArrayOperators;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.delete.scheduling_system.constant.ErrorCode;
-import team.delete.scheduling_system.constant.RegexPattern;
 import team.delete.scheduling_system.dto.UserDto;
+import team.delete.scheduling_system.dto.UserScheduleDto;
 import team.delete.scheduling_system.entity.LeaveRecord;
-import team.delete.scheduling_system.entity.Store;
-import team.delete.scheduling_system.entity.User;
+import team.delete.scheduling_system.entity.Schedule;
 import team.delete.scheduling_system.exception.AppException;
 import team.delete.scheduling_system.mapper.LeaveRecordMapper;
 import team.delete.scheduling_system.mapper.ProfessionMapper;
@@ -20,10 +20,9 @@ import team.delete.scheduling_system.mapper.UserMapper;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
-import java.util.regex.Pattern;
 
 /**
  * @author YYHelen
@@ -37,6 +36,8 @@ public class LeaveRecordService {
     final LeaveRecordMapper leaveRecordMapper;
     final ProfessionMapper professionMapper;
     final UserMapper userMapper;
+    final StringRedisTemplate stringRedisTemplate;
+    final MongoTemplate mongoTemplate;
 
     /**
      * 查询自己的所有请假记录
@@ -169,6 +170,7 @@ public class LeaveRecordService {
      *
      * @param requestPersonId 用户id
      * @param leaveTime       请假人需要的请假时间
+     * @param scheduleShift   请假人需要的请假班次
      */
     public void addLeaveRecord(Integer requestPersonId, LocalDate leaveTime, Integer scheduleShift) {
         //输入参数不能为0
@@ -177,6 +179,7 @@ public class LeaveRecordService {
         }
         // 获取当前的 LocalDate
         LocalDate currentLocalDate = LocalDate.now();
+        int dayOfWeek = leaveTime.getDayOfWeek().getValue() - 1;
 
         // 比较 leaveTime 是否为当天日期或当天之后的日期
         if (leaveTime.isBefore(currentLocalDate)) {
@@ -199,6 +202,44 @@ public class LeaveRecordService {
         if (storeId == null || groupId == null) {
             throw new AppException(ErrorCode.INCOMPLETE_USER_INFOEMATION);
         }
+
+        List<Schedule> scheduleList = mongoTemplate.find(new Query(Criteria.where("store_id").is(storeId)), Schedule.class);
+        if (scheduleList.isEmpty()) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        Schedule schedule = scheduleList.get(dayOfWeek);
+        boolean flag = false;
+        switch (requestPerson.getType()) {
+            case "CASHIER":
+                for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(scheduleShift).getCashierList()) {
+                    if (userScheduleDto.getUserId().equals(requestPersonId)) {
+                        flag = true;
+                        break;
+                    }
+                }
+                break;
+            case "CUSTOMER_SERVICE":
+                for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(scheduleShift).getCustomerServiceList()) {
+                    if (userScheduleDto.getUserId().equals(requestPersonId)) {
+                        flag = true;
+                        break;
+                    }
+                }
+                break;
+            case "STORAGE":
+                for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(scheduleShift).getStorageList()) {
+                    if (userScheduleDto.getUserId().equals(requestPersonId)) {
+                        flag = true;
+                        break;
+                    }
+                }
+                break;
+        }
+
+        if (!flag) {
+            throw new AppException(ErrorCode.USER_NOT_IN_SCHEDULE);
+        }
+
         Integer reviewerId = null;
         //查找审核人
         switch (requestPersonType) {
@@ -226,7 +267,13 @@ public class LeaveRecordService {
                 .leaveTime(leaveTime)
                 .type(LeaveRecord.Type.NOT_PROCEED)
                 .scheduleShift(scheduleShift).build();
+        String finalReviewerId = reviewerId.toString();
+        HashMap<String, String> message = new HashMap<>();
+        message.put("reviewerId", finalReviewerId);
+        message.put("leaveTime", leaveTime.toString());
+        message.put("scheduleShift", scheduleShift.toString());
 
+        stringRedisTemplate.opsForStream().add(finalReviewerId + "-leave", message);
         leaveRecordMapper.insert(build);
     }
 
@@ -269,6 +316,8 @@ public class LeaveRecordService {
         if ("CASHIER".equals(userType) || "CUSTOMER_SERVICE".equals(userType) || "STORAGE".equals(userType)) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
+//        stringRedisTemplate.opsForStream().read(userId + "-leave", consumer, StringRedisTemplate.Record.from(streamKey));
+
         return leaveRecordMapper.selectNeedReviewLeaveRecordListByUserId(userId);
     }
 
@@ -290,7 +339,7 @@ public class LeaveRecordService {
         if (userType == null) {
             throw new AppException(ErrorCode.INCOMPLETE_USER_INFOEMATION);
         }
-        if (userType == "CASHIER" || userType == "CUSTOMER_SERVICE" || userType == "STORAGE") {
+        if ("CASHIER".equals(userType) || "CUSTOMER_SERVICE".equals(userType) || "STORAGE".equals(userType)) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
         return leaveRecordMapper.selectReviewLeaveRecordListByUserId(userId);
@@ -318,19 +367,46 @@ public class LeaveRecordService {
         if (!leaveRecord.getReviewerPersonId().equals(userId)) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        LeaveRecord updateLeaveRecord = leaveRecord;
         Date currentDate = new Date();
         Timestamp currentTimestamp = new Timestamp(currentDate.getTime());
         // 将Timestamp对象设置到leaveRecord中的reviewTime属性
         leaveRecord.setReviewTime(currentTimestamp);
         if (result) {
-            updateLeaveRecord.setType(LeaveRecord.Type.PASS);
+            leaveRecord.setType(LeaveRecord.Type.PASS);
         } else {
-            updateLeaveRecord.setType(LeaveRecord.Type.REJECT);
+            leaveRecord.setType(LeaveRecord.Type.REJECT);
         }
-        leaveRecordMapper.updateById(updateLeaveRecord);
+        leaveRecordMapper.updateById(leaveRecord);
         if (result) {
-            //更新排班表
+            int dayOfWeek = leaveRecord.getLeaveTime().getDayOfWeek().getValue() - 1;
+            Schedule schedule = mongoTemplate.find(new Query(Criteria.where("store_id").is(leaveRecord.getRequestPersonId())), Schedule.class).get(dayOfWeek);
+            UserDto user = userMapper.selectUserByUserId(leaveRecord.getRequestPersonId());
+            switch (user.getType()) {
+                case "CASHIER":
+                    for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getCashierList()) {
+                        if (userScheduleDto.getUserId().equals(user.getUserId())) {
+                            schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getCashierList().remove(userScheduleDto);
+                            break;
+                        }
+                    }
+                    break;
+                case "CUSTOMER_SERVICE":
+                    for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getCustomerServiceList()) {
+                        if (userScheduleDto.getUserId().equals(user.getUserId())) {
+                            schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getCustomerServiceList().remove(userScheduleDto);
+                            break;
+                        }
+                    }
+                    break;
+                case "STORAGE":
+                    for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getStorageList()) {
+                        if (userScheduleDto.getUserId().equals(user.getUserId())) {
+                            schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getStorageList().remove(userScheduleDto);
+                            break;
+                        }
+                    }
+                    break;
+            }
         }
     }
 }

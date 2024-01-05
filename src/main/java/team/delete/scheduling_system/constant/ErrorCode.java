@@ -140,7 +140,11 @@ public enum ErrorCode {
     /**
      * 班次不存在
      */
-    SHIFT_NOT_EXISTED(200317, "班次不存在");
+    SHIFT_NOT_EXISTED(200317, "班次不存在"),
+    /**
+     * 用户不在排班中
+     */
+    USER_NOT_IN_SCHEDULE(200318, "用户不在排班中");
     private final Integer code;
     private final String message;
 
