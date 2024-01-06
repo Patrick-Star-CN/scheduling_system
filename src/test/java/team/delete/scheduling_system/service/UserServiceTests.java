@@ -73,26 +73,26 @@ public class UserServiceTests {
 
     @Test
     public void testFetchAllUser() {
-//        Integer userId = 1;
-//        Integer typeArea = 2;
-//        Integer typeId = 1;
-//        List<User> userList = userService.fetchAllUser(userId, typeArea, typeId);
-//        switch (typeArea) {
-//            case 1:
-//                userList.forEach(user -> {
-//                    assertEquals(typeId, user.getStoreId());
-//                });
-//                break;
-//            case 2:
-//                userList.forEach(user -> {
-//                    assertEquals("CASHIER", user.getType());
-//                });
-//                break;
-//            case 3:
-//                userList.forEach(user -> {
-//                    assertEquals(typeId, user.getGroupId());
-//                });
-//                break;
-//        }
+        Integer userId = 1;
+        Integer typeArea = 3;
+        Integer typeId = 1;
+        List<User> userList = userService.fetchAllUser(userId, typeArea, typeId);
+        switch (typeArea) {
+            case 1:
+                userList.forEach(user -> {
+                    assertEquals(typeId, user.getStoreId());
+                });
+                break;
+            case 2:
+                userList.forEach(user -> {
+                    assertEquals(User.Type.CASHIER, user.getType());
+                });
+                break;
+            case 3:
+                userList.forEach(user -> {
+                    assertEquals(typeId, user.getGroupId());
+                });
+                break;
+        }
     }
 }
