@@ -5,6 +5,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.delete.scheduling_system.constant.ErrorCode;
+import team.delete.scheduling_system.entity.Group;
 import team.delete.scheduling_system.entity.Profession;
 import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.exception.AppException;
@@ -95,20 +96,25 @@ public class ProfessionService{
      * 只能新增操作用户所属门店的职位
      *
      * @param userId  操作的用户对象id
-     * @param professionAdd 新增的职位对象
+     * @param managerId 新增的组别负责人id
+     * @param type 新增的职位名称
      */
-    public void addProfession(Integer userId, Profession professionAdd) {
-        if (userId == null || professionAdd == null) {
+    public void addProfession(Integer userId, Integer managerId, User.Type type) {
+        if (userId == null || managerId == null || type == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         User user = userMapper.selectById(userId);
-        User manager = userMapper.selectById(professionAdd.getManagerId());
+        User manager = userMapper.selectById(managerId);
         if (user == null || manager == null) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
-        if (user.getType() != User.Type.MANAGER || !professionAdd.getStoreId().equals(user.getStoreId())) {
+        if (user.getType() != User.Type.MANAGER) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
+        Profession professionAdd = Profession.builder()
+                .storeId(user.getStoreId())
+                .managerId(managerId)
+                .type(type).build();
         professionMapper.insert(professionAdd);
     }
 

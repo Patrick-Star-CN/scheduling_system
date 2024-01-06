@@ -29,7 +29,7 @@ public class GroupController {
      */
     @ResponseBody
     @PostMapping
-    public Object addPreference(@RequestParam Integer managerId, @RequestParam String groupName) {
+    public Object addGroup(@RequestParam Integer managerId, @RequestParam String groupName) {
         groupService.addGroup(StpUtil.getLoginIdAsInt(), managerId, groupName);
         return AjaxResult.SUCCESS();
     }

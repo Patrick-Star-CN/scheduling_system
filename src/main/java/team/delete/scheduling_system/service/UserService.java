@@ -97,30 +97,30 @@ public class UserService {
         if (userid == null || typeArea == null || typeId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
-//        User user = userMapper.selectById(userid);
-//        switch (typeArea) {
-//            case 1:
-//                if (user.getType() != User.Type.SUPER_ADMIN
-//                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))) {
-//                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-//                }
-//                return userMapper.selectUserListByStoreId(typeId);
-//            case 2:
-//                if (user.getType() != User.Type.SUPER_ADMIN
-//                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))
-//                        && !(user.getType() == User.Type.VICE_MANAGER && (professionMapper.selectProfessionListByStoreIdAndManagerId(user.getStoreId(), user.getUserId())).getId().equals(typeId))) {
-//                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-//                }
-//                return userMapper.selectUserListByProfession(typeId);
-//            case 3:
-//                if (user.getType() != User.Type.SUPER_ADMIN
-//                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))
-//                        && !(user.getType() == User.Type.VICE_MANAGER && (professionMapper.selectProfessionListByStoreIdAndManagerId(user.getStoreId(), user.getUserId())).getId().equals(typeId))
-//                        && !(user.getType() == User.Type.GROUP_MANAGER && user.getGroupId().equals(typeId))) {
-//                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-//                }
-//                return userMapper.selectUserListByGroupId(typeId);
-//        }
+        User user = userMapper.selectById(userid);
+        switch (typeArea) {
+            case 1:
+                if (user.getType() != User.Type.SUPER_ADMIN
+                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))) {
+                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+                }
+                return userMapper.selectUserListByStoreId(typeId);
+            case 2:
+                if (user.getType() != User.Type.SUPER_ADMIN
+                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))
+                        && !(user.getType() == User.Type.VICE_MANAGER && (professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), user.getUserId())).getId().equals(typeId))) {
+                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+                }
+                return userMapper.selectUserListByProfession(typeId);
+            case 3:
+                if (user.getType() != User.Type.SUPER_ADMIN
+                        && !(user.getType() == User.Type.MANAGER && user.getStoreId().equals(typeId))
+                        && !(user.getType() == User.Type.VICE_MANAGER && (professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), user.getUserId())).getId().equals(typeId))
+                        && !(user.getType() == User.Type.GROUP_MANAGER && user.getGroupId().equals(typeId))) {
+                    throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+                }
+                return userMapper.selectUserListByGroupId(typeId);
+        }
         return userMapper.selectList(null);
     }
 

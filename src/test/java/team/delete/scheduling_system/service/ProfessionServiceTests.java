@@ -24,7 +24,7 @@ public class ProfessionServiceTests {
 
     @Test
     public void testFetchAllProfession() {
-        List<Profession> professionList = professionService.fetchAllProfession(1);
+        List<Profession> professionList = professionService.fetchAllProfession(3);
         professionList.forEach(profession -> assertEquals((Integer) 1, profession.getStoreId()));
     }
 
@@ -46,11 +46,7 @@ public class ProfessionServiceTests {
 
     @Test
     public void testAddProfession() {
-        professionService.addProfession(3,
-                Profession.builder()
-                        .storeId(1)
-                        .managerId(1)
-                        .type(User.Type.STORAGE).build());
+        professionService.addProfession(3,18,User.Type.CASHIER);
     }
 
     @Test
