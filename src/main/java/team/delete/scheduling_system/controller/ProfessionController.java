@@ -12,7 +12,7 @@ import team.delete.scheduling_system.service.ProfessionService;
 
 /**
  * @author cookie1551
- * @version 1.0
+ * @version 1.3
  */
 @Validated
 @RestController
@@ -45,10 +45,6 @@ public class ProfessionController {
     @PostMapping("/{managerId}/{type}")
     public Object addProfession(@PathVariable("managerId") Integer managerId, @PathVariable("type") String type) {
         User.Type professionType = Enum.valueOf(User.Type.class, type);
-//        Integer managerId = Integer.parseInt(JSON.parseObject(str).get("managerId").toString());
-//        User.Type professionType = JSON.parseArray(JSON.parseObject(str).getString("type"), User.Type.class);
-//        //String type = JSON.parseObject(str).get("type");
-//        //User.Type professionType = Enum.valueOf(User.Type.class, type);
         professionService.addProfession(StpUtil.getLoginIdAsInt(), managerId, professionType);
         return AjaxResult.SUCCESS();
     }
