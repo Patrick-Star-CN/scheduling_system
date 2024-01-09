@@ -36,14 +36,20 @@ public class ProfessionController {
     /**
      * 添加工种接口
      *
+//     * @param str 传入的JSON格式数据
      * @param managerId 参数形式传入的工种负责人id
-     * @param professionType 参数形式传入的工种类型名称
+     * @param type 参数形式传入的工种类型名称
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-    @PostMapping
-    public Object addProfession(@RequestBody Integer managerId, @RequestParam User.Type professionType) {
-        professionService.addProfession(StpUtil.getLoginIdAsInt(),managerId, professionType);
+    @PostMapping("/{managerId}/{type}")
+    public Object addProfession(@PathVariable("managerId") Integer managerId, @PathVariable("type") String type) {
+        User.Type professionType = Enum.valueOf(User.Type.class, type);
+//        Integer managerId = Integer.parseInt(JSON.parseObject(str).get("managerId").toString());
+//        User.Type professionType = JSON.parseArray(JSON.parseObject(str).getString("type"), User.Type.class);
+//        //String type = JSON.parseObject(str).get("type");
+//        //User.Type professionType = Enum.valueOf(User.Type.class, type);
+        professionService.addProfession(StpUtil.getLoginIdAsInt(), managerId, professionType);
         return AjaxResult.SUCCESS();
     }
 
