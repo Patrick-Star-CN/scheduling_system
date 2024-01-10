@@ -38,7 +38,7 @@ public class ProfessionService{
         }
         User user = userMapper.selectById(userId);
         Profession profession = professionMapper.selectById(professionId);
-        if (!profession.getStoreId().equals(user.getStoreId())) {
+        if (user.getType() != User.Type.MANAGER || !profession.getStoreId().equals(user.getStoreId())) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
     }

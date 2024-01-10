@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * @author cookie1551 Patrick_Star
- * @version 1.2
+ * @version 1.3
  */
 @Service
 @RequiredArgsConstructor
@@ -68,7 +68,7 @@ public class GroupService {
     }
 
     /**
-     * 查询店铺某一工种的小组列表
+     * 查询店铺某一个工种的小组列表
      *
      * @param userId 操作的用户对象id
      * @param type 操作的工种
@@ -115,7 +115,7 @@ public class GroupService {
         if (manager == null) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
-        if (user.getType() != User.Type.VICE_MANAGER || manager.getType() != User.Type.GROUP_MANAGER) {
+        if (user.getType() != User.Type.VICE_MANAGER) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
         Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), user.getUserId());
@@ -159,6 +159,10 @@ public class GroupService {
         checkParameter(userId, groupUpdate);
         if (groupMapper.selectById(groupUpdate.getId()) == null) {
             throw new AppException(ErrorCode.GROUP_NOT_EXISTED);
+        }
+        User manager = userMapper.selectById(groupUpdate.getManagerId());
+        if(manager.getType() != User.Type.GROUP_MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
         groupMapper.updateById(groupUpdate);
     }

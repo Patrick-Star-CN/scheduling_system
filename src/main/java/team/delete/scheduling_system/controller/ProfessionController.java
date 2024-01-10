@@ -43,7 +43,7 @@ public class ProfessionController {
      */
     @ResponseBody
     @PostMapping("/{managerId}/{type}")
-    public Object addProfession(@PathVariable("managerId") Integer managerId, @PathVariable("type") String type) {
+    public Object addProfession(@PathVariable("manager_id") Integer managerId, @PathVariable("type") String type) {
         User.Type professionType = Enum.valueOf(User.Type.class, type);
         professionService.addProfession(StpUtil.getLoginIdAsInt(), managerId, professionType);
         return AjaxResult.SUCCESS();

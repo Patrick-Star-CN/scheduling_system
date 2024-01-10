@@ -15,7 +15,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * @author cookie1551 Patrick_Star
- * @version 1.2
+ * @version 1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -25,35 +25,35 @@ public class GroupServiceTests {
 
     @Test
     public void testAddGroup() {
-        groupService.addGroup(4, 5, "test");
+        groupService.addGroup(6, 5, "1号店库房2组");
     }
 
     @Test
     public void testDeleteGroup() {
-        groupService.deleteGroup(3, 7);
+        groupService.deleteGroup(6, 8);
     }
 
     @Test
     public void testUpdateGroup() {
-        groupService.updateGroup(3,
+        groupService.updateGroup(6,
                 Group.builder()
-                        .id(2)
+                        .id(8)
                         .storeId(1)
-                        .managerId(3)
-                        .type(User.Type.CASHIER).build());
+                        .managerId(5)
+                        .type(User.Type.STORAGE).build());
     }
 
     @Test
     public void testFetchGroupByGroupId() {
-        Integer userId = 3;
-        Integer groupId = 1;
+        Integer userId = 6;
+        Integer groupId = 3;
         Group group = groupService.fetchGroupByGroupId(userId, groupId);
         assertEquals(groupId, group.getId());
     }
 
     @Test
     public void testFetchAllGroup() {
-        Integer userId = 3;
+        Integer userId = 6;
         List<Group> groupList = groupService.fetchAllGroup(userId);
         groupList.forEach(group -> {
             assertEquals((Integer) 1, group.getStoreId());
