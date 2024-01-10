@@ -22,7 +22,7 @@ public class GroupController {
     final GroupService groupService;
 
     /**
-     * 添加小组接口
+     * 添加小组接口（副经理）
      *
      * @param managerId 参数形式传入的小组负责人id
      * @param name 参数形式传入的组别名称
@@ -30,11 +30,26 @@ public class GroupController {
      */
     @ResponseBody
     @PostMapping("/{managerId}/{name}")
-    public Object addGroup(@PathVariable("managerId") Integer managerId, @PathVariable("name") String name) {
-        groupService.addGroup(StpUtil.getLoginIdAsInt(), managerId, name);
+    public Object addGroupVice(@PathVariable("managerId") Integer managerId, @PathVariable("name") String name) {
+        groupService.addGroupVice(StpUtil.getLoginIdAsInt(), managerId, name);
         return AjaxResult.SUCCESS();
     }
 
+    /**
+     * 添加小组接口（经理）
+     *
+     * @param managerId 参数形式传入的小组负责人id
+     * @param type 参数形式传入的组别类型
+     * @param name 参数形式传入的组别名称
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @PostMapping("/{managerId}/{name}/{type}")
+    public Object addGroup(@PathVariable("managerId") Integer managerId, @PathVariable("name") String name, @PathVariable("type") String type) {
+        User.Type professionType = Enum.valueOf(User.Type.class, type);
+        groupService.addGroup(StpUtil.getLoginIdAsInt(), managerId, professionType, name);
+        return AjaxResult.SUCCESS();
+    }
     /**
      * 查询所有工种接口
      *
@@ -71,18 +86,18 @@ public class GroupController {
         groupService.deleteGroup(StpUtil.getLoginIdAsInt(), id);
         return AjaxResult.SUCCESS();
     }
+
+
+    /**
+     * 查询店铺某一工种小组列表接口
+     *
+     * @param storeId 参数形式传入的店铺id
+     * @param type 参数形式传入的工种
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/list")
+    public Object findGroupListByStoreIdAndType(@RequestParam(value = "store_id") int storeId, @RequestParam(value = "type") User.Type type) {
+        return AjaxResult.SUCCESS(groupService.fetchGroupListByTypeAndStoreId(StpUtil.getLoginIdAsInt(), type, storeId));
+    }
 }
-
-
-//    /**
-//     * 查询店铺某一工种小组列表接口
-//     *
-//     * @param storeId 参数形式传入的店铺id
-//     * @param type 参数形式传入的工种
-//     * @return json数据，包含状态码和状态信息
-//     */
-//    @ResponseBody
-//    @GetMapping("/list")
-//    public Object findGroupListByStoreIdAndType(@RequestParam(value = "store_id") int storeId, @RequestParam(value = "type") User.Type type) {
-//        return AjaxResult.SUCCESS(groupService.fetchGroupListByTypeAndStoreId(StpUtil.getLoginIdAsInt(), type, storeId));
-//    }

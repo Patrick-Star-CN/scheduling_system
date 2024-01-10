@@ -25,7 +25,7 @@ public class GroupServiceTests {
 
     @Test
     public void testAddGroup() {
-        groupService.addGroup(6, 5, "1号店库房2组");
+        groupService.addGroupVice(6, 5, "1号店库房2组");
     }
 
     @Test
