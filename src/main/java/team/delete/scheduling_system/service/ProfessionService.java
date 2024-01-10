@@ -16,7 +16,7 @@ import java.util.List;
 
 /**
  * @author cookie1551 Patrick_Star
- * @version 1.1
+ * @version 1.3
  */
 @Service
 @RequiredArgsConstructor
@@ -111,11 +111,17 @@ public class ProfessionService{
         if (user.getType() != User.Type.MANAGER) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        Profession professionAdd = Profession.builder()
-                .storeId(user.getStoreId())
-                .managerId(managerId)
-                .type(type).build();
-        professionMapper.insert(professionAdd);
+        if((manager.getType() == User.Type.MANAGER && type == User.Type.MANAGER) || (manager.getType() == User.Type.VICE_MANAGER && type != User.Type.MANAGER)) {
+            Profession professionAdd = Profession.builder()
+                    .storeId(user.getStoreId())
+                    .managerId(managerId)
+                    .type(type).build();
+            professionMapper.insert(professionAdd);
+        }
+        else
+        {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
     }
 
     /**
@@ -140,6 +146,13 @@ public class ProfessionService{
         if (professionMapper.selectById(professionUpdate.getId()) == null) {
             throw new AppException(ErrorCode.Profession_NOT_EXISTED);
         }
-        professionMapper.updateById(professionUpdate);
+        User manager = userMapper.selectById(professionUpdate.getManagerId());
+        if((manager.getType() == User.Type.MANAGER && professionUpdate.getType() == User.Type.MANAGER) || (manager.getType() == User.Type.VICE_MANAGER && professionUpdate.getType() != User.Type.MANAGER)) {
+            professionMapper.updateById(professionUpdate);
+        }
+        else
+        {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
     }
 }

@@ -12,7 +12,7 @@ import team.delete.scheduling_system.service.ProfessionService;
 
 /**
  * @author cookie1551
- * @version 1.0
+ * @version 1.3
  */
 @Validated
 @RestController
@@ -36,14 +36,16 @@ public class ProfessionController {
     /**
      * 添加工种接口
      *
+//     * @param str 传入的JSON格式数据
      * @param managerId 参数形式传入的工种负责人id
-     * @param professionType 参数形式传入的工种类型名称
+     * @param type 参数形式传入的工种类型名称
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-    @PostMapping
-    public Object addProfession(@RequestBody Integer managerId, @RequestParam User.Type professionType) {
-        professionService.addProfession(StpUtil.getLoginIdAsInt(),managerId, professionType);
+    @PostMapping("/{managerId}/{type}")
+    public Object addProfession(@PathVariable("manager_id") Integer managerId, @PathVariable("type") String type) {
+        User.Type professionType = Enum.valueOf(User.Type.class, type);
+        professionService.addProfession(StpUtil.getLoginIdAsInt(), managerId, professionType);
         return AjaxResult.SUCCESS();
     }
 
