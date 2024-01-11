@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import team.delete.scheduling_system.dto.AjaxResult;
+import team.delete.scheduling_system.service.ChangeShiftService;
 import team.delete.scheduling_system.service.CustomerFlowService;
 import team.delete.scheduling_system.service.ShiftService;
 import team.delete.scheduling_system.util.FileUtil;
@@ -23,7 +24,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class ShiftController {
     private final ShiftService shiftService;
-
+    private final ChangeShiftService changeShiftService;
     private final CustomerFlowService customerFlowService;
 
     /**
@@ -72,6 +73,15 @@ public class ShiftController {
     @PostMapping("/customer-flow")
     public Object importCustomerFlow(@RequestParam("file") MultipartFile file) throws IOException {
         customerFlowService.insertByExcel(StpUtil.getLoginIdAsInt(), FileUtil.convertToFile(file));
+        return AjaxResult.SUCCESS();
+    }
+    @ResponseBody
+    @PostMapping("/change-shift")
+    public  Object changeShift(@RequestParam(value = "store_id") Integer storeId,
+                               @RequestParam(value = "user_id1") Integer userId1, @RequestParam(value = "user_id2") Integer userId2,
+                               @RequestParam(value = "shift_id1") Integer shiftId1, @RequestParam(value = "shift_id2") Integer shiftId2,
+                               @RequestParam(value = "week_id1") Integer weekId1, @RequestParam(value = "week_id2") Integer weekId2) {
+        changeShiftService.changeShift(StpUtil.getLoginIdAsInt(), storeId, userId1, userId2, shiftId1, shiftId2, weekId1, weekId2);
         return AjaxResult.SUCCESS();
     }
 }
