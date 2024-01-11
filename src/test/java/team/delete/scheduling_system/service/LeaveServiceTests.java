@@ -25,9 +25,9 @@ public class LeaveServiceTests {
     @Test
     public void testFetchAllLeaveRecord() {
         Integer userId = 2;
-        List<LeaveRecord> leaveRecordList = leaveRecordService.fetchAllLeaveRecord(userId);
-        for (LeaveRecord leaveRecord : leaveRecordList) {
-            System.out.println(leaveRecord);
+        List<LeaveRecordDto> leaveRecordList = leaveRecordService.fetchAllLeaveRecord(userId);
+        for (LeaveRecordDto leaveRecordDto : leaveRecordList) {
+            System.out.println(leaveRecordDto);
         }
     }
 
@@ -131,9 +131,9 @@ public class LeaveServiceTests {
     @Test
     public void testFetchAllReviewLeaveRecord() {
         Integer userId = 7;
-        List<LeaveRecord> leaveRecordList = leaveRecordService.fetchAllReviewLeaveRecord(userId);
-        for (LeaveRecord leaveRecord : leaveRecordList) {
-            System.out.println(leaveRecord);
+        List<LeaveRecordDto> leaveRecordList = leaveRecordService.fetchAllReviewLeaveRecord(userId);
+        for (LeaveRecordDto leaveRecordDto : leaveRecordList) {
+            System.out.println(leaveRecordDto);
         }
     }
 
@@ -142,4 +142,76 @@ public class LeaveServiceTests {
 //        leaveRecordService.reviewLeaveRecord(userId, recordId, result);
         leaveRecordService.reviewLeaveRecord(5, 3, true);
     }
+
+    @Test
+    public void testReviewLeaveRecordWithNonExistentUser() {
+        AppException exception = assertThrows(AppException.class,
+                () -> leaveRecordService.reviewLeaveRecord(-1, 3, true));
+        assertEquals(exception.getCode(), ErrorCode.USER_NOT_EXISTED);
+    }
+
+    @Test
+    public void testReviewLeaveRecordWithNullUserIdOrRecordId() {
+        AppException userIdNullException = assertThrows(AppException.class,
+                () -> leaveRecordService.reviewLeaveRecord(null, 3, true));
+        assertEquals(userIdNullException.getCode(), ErrorCode.PARAM_ERROR);
+
+        AppException recordIdNullException = assertThrows(AppException.class,
+                () -> leaveRecordService.reviewLeaveRecord(5, null, true));
+        assertEquals(recordIdNullException.getCode(), ErrorCode.PARAM_ERROR);
+    }
+
+    @Test
+    public void testReviewLeaveRecordWithNonExistentRecord() {
+        AppException exception = assertThrows(AppException.class,
+                () -> leaveRecordService.reviewLeaveRecord(5, -1, true));
+        assertEquals(exception.getCode(), ErrorCode.LEAVE_RECORD_NOT_EXISTED);
+    }
+
+    @Test
+    public void testReviewLeaveRecordWithPermissionError() {
+        AppException exception = assertThrows(AppException.class,
+                () -> leaveRecordService.reviewLeaveRecord(2, 12, true));
+        assertEquals(exception.getCode(), ErrorCode.USER_PERMISSION_ERROR);
+    }
+
+    @Test
+    public void testFetchAllReviewLeaveRecordWithNullUserId() {
+        AppException exception = assertThrows(AppException.class,
+                () -> leaveRecordService.fetchAllReviewLeaveRecord(null));
+        assertEquals(exception.getCode(), ErrorCode.PARAM_ERROR);
+    }
+
+    @Test
+    public void testFetchAllReviewLeaveRecordWithNoPermission() {
+        AppException exception = assertThrows(AppException.class,
+                () -> leaveRecordService.fetchAllReviewLeaveRecord(2));
+        assertEquals(exception.getCode(), ErrorCode.USER_PERMISSION_ERROR);
+    }
+
+    @Test
+    public void testAddLeaveRecordWithNullParams() {
+        AppException exception = assertThrows(AppException.class,
+                () -> leaveRecordService.addLeaveRecord(null, LocalDate.now(), 1));
+        assertEquals(exception.getCode(), ErrorCode.PARAM_ERROR);
+
+        exception = assertThrows(AppException.class,
+                () -> leaveRecordService.addLeaveRecord(1, null, 1));
+        assertEquals(exception.getCode(), ErrorCode.PARAM_ERROR);
+    }
+
+    @Test
+    public void testAddLeaveRecordWithPastDate() {
+        AppException exception = assertThrows(AppException.class,
+                () -> leaveRecordService.addLeaveRecord(1, LocalDate.now().minusDays(1), 1));
+        assertEquals(exception.getCode(), ErrorCode.ILLEGAL_LEAVE_TIME);
+    }
+
+    @Test
+    public void testAddLeaveRecordWithUserCannotLeave() {
+        AppException exception = assertThrows(AppException.class,
+                () -> leaveRecordService.addLeaveRecord(10, LocalDate.now(), 1));
+        assertEquals(exception.getCode(), ErrorCode.USER_CAN_NOT_LEAVE);
+    }
+
 }
