@@ -142,9 +142,13 @@ public enum ErrorCode {
      */
     SHIFT_NOT_EXISTED(200317, "班次不存在"),
     /**
-     * 用户不在排班中
+     * 用户在该时间段没有排班
      */
-    USER_NOT_IN_SCHEDULE(200318, "用户不在排班中");
+    USER_NOT_IN_SCHEDULE(200318, "用户在该时间段没有排班"),
+    /**
+     * 该时间段只有一名员工，无法请假
+     */
+    USER_CAN_NOT_LEAVE(200319, "该时间段只有一名员工，无法请假");
     private final Integer code;
     private final String message;
 

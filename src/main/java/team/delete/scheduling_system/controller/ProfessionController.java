@@ -42,7 +42,7 @@ public class ProfessionController {
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-    @PostMapping("/{managerId}/{type}")
+    @PostMapping("/{manager_id}/{type}")
     public Object addProfession(@PathVariable("manager_id") Integer managerId, @PathVariable("type") String type) {
         User.Type professionType = Enum.valueOf(User.Type.class, type);
         professionService.addProfession(StpUtil.getLoginIdAsInt(), managerId, professionType);
