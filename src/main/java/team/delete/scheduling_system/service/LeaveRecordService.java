@@ -11,7 +11,6 @@ import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.delete.scheduling_system.constant.ErrorCode;
-import team.delete.scheduling_system.constant.RegexPattern;
 import team.delete.scheduling_system.dto.LeaveRecordDto;
 import team.delete.scheduling_system.dto.UserDto;
 import team.delete.scheduling_system.dto.UserScheduleDto;
@@ -25,7 +24,6 @@ import team.delete.scheduling_system.mapper.UserMapper;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -43,6 +41,7 @@ public class LeaveRecordService {
     final UserMapper userMapper;
     final StringRedisTemplate stringRedisTemplate;
     final MongoTemplate mongoTemplate;
+    final MessageService messageService;
 
     /**
      * 查询自己的所有请假记录
@@ -460,5 +459,6 @@ public class LeaveRecordService {
             }
             mongoTemplate.save(schedule);
         }
+        messageService.sendMessage(leaveRecord.getRequestPersonId(), "您的请假申请已被审核");
     }
 }

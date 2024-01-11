@@ -46,8 +46,7 @@ public class GroupController {
     @ResponseBody
     @PostMapping("/{manager_id}/{name}/{type}")
     public Object addGroup(@PathVariable("manager_id") Integer managerId, @PathVariable("name") String name, @PathVariable("type") String type) {
-        User.Type professionType = Enum.valueOf(User.Type.class, type);
-        groupService.addGroup(StpUtil.getLoginIdAsInt(), managerId, professionType, name);
+        groupService.addGroup(StpUtil.getLoginIdAsInt(), managerId, Enum.valueOf(User.Type.class, type), name);
         return AjaxResult.SUCCESS();
     }
     /**

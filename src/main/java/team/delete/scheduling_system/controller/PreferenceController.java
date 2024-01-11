@@ -47,8 +47,7 @@ public class PreferenceController {
     @ResponseBody
     @GetMapping
     public Object findPreference() {
-        Preference preference = preferenceService.findPreferenceByUserId(StpUtil.getLoginIdAsInt());
-        return AjaxResult.SUCCESS(preference);
+        return AjaxResult.SUCCESS(preferenceService.findPreferenceByUserId(StpUtil.getLoginIdAsInt()));
     }
 
     /**
