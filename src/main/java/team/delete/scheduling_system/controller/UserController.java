@@ -72,8 +72,8 @@ public class UserController {
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-    @DeleteMapping("/{userId}")
-    public Object deleteUser(@PathVariable Integer userId) {
+    @DeleteMapping("/{user_id}")
+    public Object deleteUser(@PathVariable(value = "user_id") Integer userId) {
         userService.deleteUser(StpUtil.getLoginIdAsInt(), userId);
         return AjaxResult.SUCCESS();
     }

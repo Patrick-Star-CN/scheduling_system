@@ -7,17 +7,19 @@ import lombok.Data;
 import lombok.ToString;
 import lombok.experimental.Accessors;
 
-/**
- * @author Patrick_Star
- * @version 1.0
- */
 @Data
 @Builder
 @ToString
 @Accessors(chain = true)
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UserScheduleDto {
-    private Integer userId;
-    private String name;
-    private Boolean leave;
+public class LeaveRecordDto {
+    private Integer recordId;
+    private String requestPerson;
+    private String reviewerPerson;
+    private String leaveTime;
+    private String reviewTime;
+    private String type;
+    private Integer scheduleShift;
+
+    // Getters and Setters
 }
