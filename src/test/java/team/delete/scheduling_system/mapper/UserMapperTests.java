@@ -26,4 +26,8 @@ public class UserMapperTests {
     public void testFetchUserByUserId() {
         System.out.println(userMapper.selectUserListByStoreId(1));
     }
+    @Test
+    public void selectUserTypeByUserId() {
+        System.out.println(userMapper.selectUserTypeByUserId(1));
+    }
 }

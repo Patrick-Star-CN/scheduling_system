@@ -39,4 +39,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("SELECT user.user_id, user.name, user.password, user.type, user.store_id, user.group_id FROM user, group_tb WHERE user.store_id = #{storeId} AND group_tb.type = #{type} AND user.group_id = group_tb.id")
     List<User> selectUserListByStoreIdAndType(Integer storeId, User.Type type);
+
+    @Select("SELECT type FROM user_details_view u WHERE u.user_id = #{userId}")
+    User.Type selectUserTypeByUserId(Integer userId);
 }
