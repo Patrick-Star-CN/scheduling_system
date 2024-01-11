@@ -5,13 +5,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import team.delete.scheduling_system.constant.ErrorCode;
 import team.delete.scheduling_system.dto.UserDto;
 import team.delete.scheduling_system.dto.UserInsertDto;
 import team.delete.scheduling_system.entity.User;
+import team.delete.scheduling_system.exception.AppException;
 
 import java.util.List;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 /**
  * @author cookie1551 yyhelen Patrick_Star
@@ -31,6 +33,14 @@ public class UserServiceTests {
                         .storeId(1)
                         .groupId(1)
                         .type(User.Type.CASHIER).build());
+    }
+
+    @Test
+    public void testAddUserWithNullParams() {
+        AppException exception = assertThrows(AppException.class, () -> {
+            userService.addUser(null, null);
+        });
+        assertEquals(exception.getCode(), ErrorCode.PARAM_ERROR);
     }
 
     @Test
@@ -73,26 +83,26 @@ public class UserServiceTests {
 
     @Test
     public void testFetchAllUser() {
-//        Integer userId = 1;
-//        Integer typeArea = 2;
-//        Integer typeId = 1;
-//        List<User> userList = userService.fetchAllUser(userId, typeArea, typeId);
-//        switch (typeArea) {
-//            case 1:
-//                userList.forEach(user -> {
-//                    assertEquals(typeId, user.getStoreId());
-//                });
-//                break;
-//            case 2:
-//                userList.forEach(user -> {
-//                    assertEquals("CASHIER", user.getType());
-//                });
-//                break;
-//            case 3:
-//                userList.forEach(user -> {
-//                    assertEquals(typeId, user.getGroupId());
-//                });
-//                break;
-//        }
+        Integer userId = 1;
+        Integer typeArea = 3;
+        Integer typeId = 1;
+        List<User> userList = userService.fetchAllUser(userId, typeArea, typeId);
+        switch (typeArea) {
+            case 1:
+                userList.forEach(user -> {
+                    assertEquals(typeId, user.getStoreId());
+                });
+                break;
+            case 2:
+                userList.forEach(user -> {
+                    assertEquals(User.Type.CASHIER, user.getType());
+                });
+                break;
+            case 3:
+                userList.forEach(user -> {
+                    assertEquals(typeId, user.getGroupId());
+                });
+                break;
+        }
     }
 }

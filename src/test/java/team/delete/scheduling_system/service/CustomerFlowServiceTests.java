@@ -22,4 +22,9 @@ public class CustomerFlowServiceTests {
     public void testAddCustomerFlow() {
         customerFlowService.insertByExcel(1, new File("src/test/resources/客流数据.xlsx") );
     }
+
+    @Test
+    public void testFetchCustomerFlow() {
+        System.out.println(customerFlowService.fetchAllCustomerFlow(3));
+    }
 }

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import team.delete.scheduling_system.dto.AjaxResult;
 import team.delete.scheduling_system.service.CustomerFlowService;
+import team.delete.scheduling_system.service.ScheduleService;
 import team.delete.scheduling_system.service.ShiftService;
 import team.delete.scheduling_system.util.FileUtil;
 
@@ -23,6 +24,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class ShiftController {
     private final ShiftService shiftService;
+
+    private final ScheduleService scheduleService;
 
     private final CustomerFlowService customerFlowService;
 
@@ -46,7 +49,7 @@ public class ShiftController {
     @ResponseBody
     @GetMapping("/schedule/{id}")
     public Object fetchSchedule(@PathVariable Integer id) {
-        return AjaxResult.SUCCESS(shiftService.fetchScheduleList(StpUtil.getLoginIdAsInt(), id));
+        return AjaxResult.SUCCESS(scheduleService.fetchScheduleList(StpUtil.getLoginIdAsInt(), id));
     }
 
     /**
@@ -58,7 +61,7 @@ public class ShiftController {
     @PostMapping("/{id}")
     public Object initSchedule(@PathVariable Integer id) {
         shiftService.initShift(StpUtil.getLoginIdAsInt(), id);
-        shiftService.initSchedule(StpUtil.getLoginIdAsInt(), id);
+        scheduleService.initSchedule(StpUtil.getLoginIdAsInt(), id);
         return AjaxResult.SUCCESS();
     }
 
@@ -73,5 +76,16 @@ public class ShiftController {
     public Object importCustomerFlow(@RequestParam("file") MultipartFile file) throws IOException {
         customerFlowService.insertByExcel(StpUtil.getLoginIdAsInt(), FileUtil.convertToFile(file));
         return AjaxResult.SUCCESS();
+    }
+
+    /**
+     * 查询客流数据接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/customer-flow")
+    public Object fetchCustomerFlow() {
+        return AjaxResult.SUCCESS(customerFlowService.fetchAllCustomerFlow(StpUtil.getLoginIdAsInt()));
     }
 }

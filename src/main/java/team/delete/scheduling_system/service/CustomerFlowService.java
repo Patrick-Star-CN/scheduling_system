@@ -4,6 +4,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.excel.util.ListUtils;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -80,5 +81,19 @@ public class CustomerFlowService {
             }
         }).sheet().doRead();
         file.delete();
+    }
+
+    public List<CustomerFlow> fetchAllCustomerFlow(Integer userId) {
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        if (user.getType() != User.Type.MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        return customerFlowMapper.selectList(new QueryWrapper<CustomerFlow>().eq("store_id", user.getStoreId()));
     }
 }

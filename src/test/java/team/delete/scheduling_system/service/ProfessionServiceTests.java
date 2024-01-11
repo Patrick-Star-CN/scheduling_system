@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 
 /**
  * @author cookie1551 Patrick_Star
- * @version 1.1
+ * @version 1.3
  */
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -24,47 +24,43 @@ public class ProfessionServiceTests {
 
     @Test
     public void testFetchAllProfession() {
-        List<Profession> professionList = professionService.fetchAllProfession(1);
+        List<Profession> professionList = professionService.fetchAllProfession(3);
         professionList.forEach(profession -> assertEquals((Integer) 1, profession.getStoreId()));
     }
 
     @Test
     public void testFetchProfessionByProfessionId() {
         Integer professionId = 1;
-        Profession profession = professionService.fetchProfessionByProfessionId(2, professionId);
+        Profession profession = professionService.fetchProfessionByProfessionId(3, professionId);
         assertEquals(professionId, profession.getId());
     }
 
     @Test
     public void testFetchProfessionByStoreIdAndManagerId() {
         Integer storeId = 1;
-        Integer managerId  = 1;
-        Profession profession = professionService.fetchProfessionByStoreIdAndManagerId(2, storeId, managerId);
+        Integer managerId  = 6;
+        Profession profession = professionService.fetchProfessionByStoreIdAndManagerId(3, storeId, managerId);
         assertEquals(storeId, profession.getStoreId());
         assertEquals(managerId, profession.getManagerId());
     }
 
     @Test
     public void testAddProfession() {
-        professionService.addProfession(3,
-                Profession.builder()
-                        .storeId(1)
-                        .managerId(1)
-                        .type(User.Type.STORAGE).build());
+        professionService.addProfession(3,18,User.Type.CASHIER);
     }
 
     @Test
     public void testUpdateProfession() {
         professionService.updateProfession(3,
                 Profession.builder()
-                        .id(1)
+                        .id(3)
                         .storeId(1)
-                        .managerId(2)
-                        .type(User.Type.STORAGE).build());
+                        .managerId(18)
+                        .type(User.Type.CUSTOMER_SERVICE).build());
     }
 
     @Test
     public void testDeleteProfession() {
-        professionService.deleteProfession(2, 4);
+        professionService.deleteProfession(3, 7);
     }
 }

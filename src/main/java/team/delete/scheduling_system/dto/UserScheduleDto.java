@@ -19,4 +19,5 @@ import lombok.experimental.Accessors;
 public class UserScheduleDto {
     private Integer userId;
     private String name;
+    private Boolean leave;
 }
