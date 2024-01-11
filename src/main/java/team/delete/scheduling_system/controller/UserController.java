@@ -102,4 +102,14 @@ public class UserController {
         return AjaxResult.SUCCESS();
     }
 
+    /**
+     * 查询可换班对象接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/shift")
+    public Object fetchUserShift() {
+        return AjaxResult.SUCCESS(userService.fetchUserShift(StpUtil.getLoginIdAsInt()));
+    }
 }

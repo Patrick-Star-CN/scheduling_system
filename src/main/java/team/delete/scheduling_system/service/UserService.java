@@ -232,4 +232,27 @@ public class UserService {
         }
         userMapper.updateById(userUpdate);
     }
+
+
+    /**
+     * 查询可换班对象
+     *
+     * @param userId   操作的用户对象id
+     * @return 职位信息列表
+     */
+    public List<String> fetchUserShift(Integer userId) {
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user.getType() == User.Type.GROUP_MANAGER) {
+            return userMapper.selectUserListByUserIdStoreIdAndGroupType(userId, user.getStoreId(), userMapper.selectGroupTypeByUserId(userId));
+        }
+        else if (user.getType() == User.Type.CASHIER || user.getType() == User.Type.STORAGE || user.getType() == User.Type.CUSTOMER_SERVICE) {
+            return userMapper.selectUserListByStoreIdAndUserType(user.getStoreId(), user.getType());
+        }
+        else{
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+    }
 }
