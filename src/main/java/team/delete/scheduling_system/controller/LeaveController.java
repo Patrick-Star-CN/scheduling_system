@@ -14,6 +14,8 @@ import java.util.Map;
 
 /**
  * 请假记录相关接口
+ *
+ * @author YYHelen
  */
 @Validated
 @RestController
@@ -29,19 +31,17 @@ public class LeaveController {
      */
     @ResponseBody
     @GetMapping("/all")
-    public AjaxResult fetchAllLeaveRecord() {
-        Integer userId = StpUtil.getLoginIdAsInt();
-        return AjaxResult.SUCCESS(leaveRecordService.fetchAllLeaveRecord(userId));
+    public Object fetchAllLeaveRecord() {
+        return AjaxResult.SUCCESS(leaveRecordService.fetchAllLeaveRecord(StpUtil.getLoginIdAsInt()));
     }
 
     /**
      * 查询自己的某个时间区间请假记录
      */
     @GetMapping("/range")
-    public AjaxResult fetchAllLeaveRecordByRange(@RequestParam LocalDate startTime,
+    public Object fetchAllLeaveRecordByRange(@RequestParam LocalDate startTime,
                                                  @RequestParam LocalDate endTime) {
-        Integer userId = StpUtil.getLoginIdAsInt();
-        return AjaxResult.SUCCESS(leaveRecordService.fetchAllLeaveRecordByRange(userId, startTime, endTime));
+        return AjaxResult.SUCCESS(leaveRecordService.fetchAllLeaveRecordByRange(StpUtil.getLoginIdAsInt(), startTime, endTime));
     }
 
     /**
@@ -49,36 +49,28 @@ public class LeaveController {
      */
     @ResponseBody
     @DeleteMapping("/{recordId}")
-    public AjaxResult deleteLeaveRecordByRecordId(@PathVariable Integer recordId) {
-        Integer userId = StpUtil.getLoginIdAsInt();
-        leaveRecordService.deleteLeaveRecordByRecordId(userId, recordId);
+    public Object deleteLeaveRecordByRecordId(@PathVariable Integer recordId) {
+        leaveRecordService.deleteLeaveRecordByRecordId(StpUtil.getLoginIdAsInt(), recordId);
         return AjaxResult.SUCCESS();
     }
 
     @PostMapping("/add")
     @ResponseBody
     public Object addUser(@RequestBody LeaveRequestDto leaveRequestDto) {
-        Integer userId = StpUtil.getLoginIdAsInt();
-        LocalDate leaveTime = leaveRequestDto.getLeaveTime();
-        Integer scheduleShift = leaveRequestDto.getScheduleShift();
-        leaveRecordService.addLeaveRecord(userId, leaveTime, scheduleShift);
+        leaveRecordService.addLeaveRecord(StpUtil.getLoginIdAsInt(), leaveRequestDto.getLeaveTime(), leaveRequestDto.getScheduleShift());
         return AjaxResult.SUCCESS();
     }
 
     @ResponseBody
-    @GetMapping("/allreview")
-    public AjaxResult fetchAllReviewLeaveRecord() {
-        Integer userId = StpUtil.getLoginIdAsInt();
-        return AjaxResult.SUCCESS(leaveRecordService.fetchAllReviewLeaveRecord(userId));
+    @GetMapping("/all_review")
+    public Object fetchAllReviewLeaveRecord() {
+        return AjaxResult.SUCCESS(leaveRecordService.fetchAllReviewLeaveRecord(StpUtil.getLoginIdAsInt()));
     }
 
     @ResponseBody
     @PostMapping("/review")
-    public Object reviewLeaveRecord(@RequestBody Map<Integer, Integer> map) {
-        Integer userId = StpUtil.getLoginIdAsInt();
-        Integer recordId = map.get("recordId");
-        boolean result = (map.get("status")).equals(1);
-        leaveRecordService.reviewLeaveRecord(userId, recordId, result);
+    public Object reviewLeaveRecord(@RequestBody Map<String, Integer> map) {
+        leaveRecordService.reviewLeaveRecord(StpUtil.getLoginIdAsInt(), map.get("record_id"), (map.get("status")).equals(1));
         return AjaxResult.SUCCESS();
     }
 }

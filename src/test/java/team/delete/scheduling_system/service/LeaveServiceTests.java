@@ -25,8 +25,8 @@ public class LeaveServiceTests {
     @Test
     public void testFetchAllLeaveRecord() {
         Integer userId = 2;
-        List<LeaveRecord> leaveRecordList = leaveRecordService.fetchAllLeaveRecord(userId);
-        for (LeaveRecord leaveRecord : leaveRecordList) {
+        List<LeaveRecordDto> leaveRecordList = leaveRecordService.fetchAllLeaveRecord(userId);
+        for (LeaveRecordDto leaveRecord : leaveRecordList) {
             System.out.println(leaveRecord);
         }
     }
@@ -131,8 +131,8 @@ public class LeaveServiceTests {
     @Test
     public void testFetchAllReviewLeaveRecord() {
         Integer userId = 7;
-        List<LeaveRecord> leaveRecordList = leaveRecordService.fetchAllReviewLeaveRecord(userId);
-        for (LeaveRecord leaveRecord : leaveRecordList) {
+        List<LeaveRecordDto> leaveRecordList = leaveRecordService.fetchAllReviewLeaveRecord(userId);
+        for (LeaveRecordDto leaveRecord : leaveRecordList) {
             System.out.println(leaveRecord);
         }
     }
