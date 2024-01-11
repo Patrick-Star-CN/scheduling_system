@@ -324,9 +324,11 @@ public class LeaveRecordService {
         if ("CASHIER".equals(userType) || "CUSTOMER_SERVICE".equals(userType) || "STORAGE".equals(userType)) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-//        stringRedisTemplate.opsForStream().read(userId + "-leave", consumer, StringRedisTemplate.Record.from(streamKey));
-
-        return leaveRecordMapper.selectNeedReviewLeaveRecordListByUserId(userId);
+        List<String> recordList = stringRedisTemplate.opsForList().range(userId + "-leave", 0, -1);
+        if (recordList == null || recordList.isEmpty()) {
+            return leaveRecordMapper.selectNeedReviewLeaveRecordListByUserId(userId);
+        }
+        return JSON.parseArray(recordList.toString(), LeaveRecord.class);
     }
 
     /**
@@ -375,6 +377,8 @@ public class LeaveRecordService {
         if (!leaveRecord.getReviewerPersonId().equals(userId)) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
+
+        stringRedisTemplate.opsForList().remove(userId + "-leave", 1, JSON.toJSONString(leaveRecord));
         Date currentDate = new Date();
         Timestamp currentTimestamp = new Timestamp(currentDate.getTime());
         // 将Timestamp对象设置到leaveRecord中的reviewTime属性

@@ -64,7 +64,7 @@ public class LeaveServiceTests {
         Integer scheduleShift = 2;
         //普通员工添加
         int requestPersonId = 23;
-        LocalDate leaveTime = LocalDate.of(2024, 1, 15);
+        LocalDate leaveTime = LocalDate.of(2024, 1, 16);
         leaveRecordService.addLeaveRecord(requestPersonId, leaveTime, scheduleShift);
 //        //小组长添加
 //        requestPersonId = 7;
@@ -120,7 +120,7 @@ public class LeaveServiceTests {
 
     @Test
     public void testFetchAllNeedReviewLeaveRecord() {
-        Integer userId = 7;
+        Integer userId = 5;
         List<LeaveRecord> leaveRecordList = leaveRecordService.fetchAllNeedReviewLeaveRecord(userId);
         for (LeaveRecord leaveRecord : leaveRecordList) {
             System.out.println(leaveRecord);
