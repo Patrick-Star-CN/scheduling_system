@@ -1,5 +1,7 @@
 package team.delete.scheduling_system.service;
 
+import com.alibaba.fastjson.JSON;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -21,7 +23,6 @@ import team.delete.scheduling_system.mapper.UserMapper;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -209,11 +210,13 @@ public class LeaveRecordService {
         }
         Schedule schedule = scheduleList.get(dayOfWeek);
         boolean flag = false;
+        int size = 0;
         switch (requestPerson.getType()) {
             case "CASHIER":
                 for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(scheduleShift).getCashierList()) {
                     if (userScheduleDto.getUserId().equals(requestPersonId)) {
                         flag = true;
+                        size = schedule.getScheduleDetails().get(scheduleShift).getCashierList().size();
                         break;
                     }
                 }
@@ -222,6 +225,7 @@ public class LeaveRecordService {
                 for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(scheduleShift).getCustomerServiceList()) {
                     if (userScheduleDto.getUserId().equals(requestPersonId)) {
                         flag = true;
+                        size = schedule.getScheduleDetails().get(scheduleShift).getCustomerServiceList().size();
                         break;
                     }
                 }
@@ -230,6 +234,7 @@ public class LeaveRecordService {
                 for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(scheduleShift).getStorageList()) {
                     if (userScheduleDto.getUserId().equals(requestPersonId)) {
                         flag = true;
+                        size = schedule.getScheduleDetails().get(scheduleShift).getStorageList().size();
                         break;
                     }
                 }
@@ -238,6 +243,9 @@ public class LeaveRecordService {
 
         if (!flag) {
             throw new AppException(ErrorCode.USER_NOT_IN_SCHEDULE);
+        }
+        if (size == 1) {
+            throw new AppException(ErrorCode.USER_CAN_NOT_LEAVE);
         }
 
         Integer reviewerId = null;
@@ -268,13 +276,13 @@ public class LeaveRecordService {
                 .type(LeaveRecord.Type.NOT_PROCEED)
                 .scheduleShift(scheduleShift).build();
         String finalReviewerId = reviewerId.toString();
-        HashMap<String, String> message = new HashMap<>();
-        message.put("reviewerId", finalReviewerId);
-        message.put("leaveTime", leaveTime.toString());
-        message.put("scheduleShift", scheduleShift.toString());
-
-        stringRedisTemplate.opsForStream().add(finalReviewerId + "-leave", message);
         leaveRecordMapper.insert(build);
+        LeaveRecord leaveRecord = leaveRecordMapper.selectOne(new QueryWrapper<LeaveRecord>()
+                .eq("request_person_id", requestPersonId)
+                .eq("reviewer_person_id", reviewerId)
+                .eq("leave_time", leaveTime)
+                .eq("schedule_shift", scheduleShift));
+        stringRedisTemplate.opsForList().leftPush(finalReviewerId + "-leave", JSON.toJSONString(leaveRecord));
     }
 
     /**
@@ -385,7 +393,7 @@ public class LeaveRecordService {
                 case "CASHIER":
                     for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getCashierList()) {
                         if (userScheduleDto.getUserId().equals(user.getUserId())) {
-                            schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getCashierList().remove(userScheduleDto);
+                            userScheduleDto.setLeave(true);
                             break;
                         }
                     }
@@ -393,7 +401,7 @@ public class LeaveRecordService {
                 case "CUSTOMER_SERVICE":
                     for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getCustomerServiceList()) {
                         if (userScheduleDto.getUserId().equals(user.getUserId())) {
-                            schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getCustomerServiceList().remove(userScheduleDto);
+                            userScheduleDto.setLeave(true);
                             break;
                         }
                     }
@@ -401,7 +409,7 @@ public class LeaveRecordService {
                 case "STORAGE":
                     for (UserScheduleDto userScheduleDto : schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getStorageList()) {
                         if (userScheduleDto.getUserId().equals(user.getUserId())) {
-                            schedule.getScheduleDetails().get(leaveRecord.getScheduleShift()).getStorageList().remove(userScheduleDto);
+                            userScheduleDto.setLeave(true);
                             break;
                         }
                     }

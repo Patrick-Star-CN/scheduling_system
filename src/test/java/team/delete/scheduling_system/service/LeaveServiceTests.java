@@ -5,12 +5,15 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import team.delete.scheduling_system.constant.ErrorCode;
 import team.delete.scheduling_system.entity.LeaveRecord;
+import team.delete.scheduling_system.exception.AppException;
 
 import java.time.LocalDate;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThrows;
 
 @SpringBootTest
 @RunWith(SpringRunner.class)
@@ -58,10 +61,10 @@ public class LeaveServiceTests {
 
     @Test
     public void testAddLeaveRecord() {
-        Integer scheduleShift = 1;
+        Integer scheduleShift = 2;
         //普通员工添加
-        int requestPersonId = 2;
-        LocalDate leaveTime = LocalDate.of(2024, 1, 6);
+        int requestPersonId = 23;
+        LocalDate leaveTime = LocalDate.of(2024, 1, 15);
         leaveRecordService.addLeaveRecord(requestPersonId, leaveTime, scheduleShift);
 //        //小组长添加
 //        requestPersonId = 7;
@@ -70,6 +73,30 @@ public class LeaveServiceTests {
 //        //副经理添加
 //        leaveTime = LocalDate.of(2024, 1, 21);
 //        leaveRecordService.addLeaveRecord(requestPersonId, leaveTime, scheduleShift);
+    }
+
+    @Test
+    public void testAddLeaveRecordWithWrongSchedule() {
+        Integer scheduleShift = 1;
+        //普通员工添加
+        int requestPersonId = 2;
+        LocalDate leaveTime = LocalDate.of(2024, 1, 15);
+        AppException appException = assertThrows(AppException.class, () -> {
+            leaveRecordService.addLeaveRecord(requestPersonId, leaveTime, scheduleShift);
+        });
+        assertEquals(ErrorCode.USER_NOT_IN_SCHEDULE, appException.getCode());
+    }
+
+    @Test
+    public void testAddLeaveRecordWithOnlyOne() {
+        Integer scheduleShift = 1;
+        //普通员工添加
+        int requestPersonId = 2;
+        LocalDate leaveTime = LocalDate.of(2024, 1, 15);
+        AppException appException = assertThrows(AppException.class, () -> {
+            leaveRecordService.addLeaveRecord(requestPersonId, leaveTime, scheduleShift);
+        });
+        assertEquals(ErrorCode.USER_CAN_NOT_LEAVE, appException.getCode());
     }
 
     @Test
@@ -111,12 +138,7 @@ public class LeaveServiceTests {
 
     @Test
     public void testReviewLeaveRecord() {
-        boolean result = false;
-        Integer userId = 9;
-        Integer recordId = 2;
 //        leaveRecordService.reviewLeaveRecord(userId, recordId, result);
-        leaveRecordService.reviewLeaveRecord(userId, recordId, !result);
+        leaveRecordService.reviewLeaveRecord(5, 3, true);
     }
-
-
 }
