@@ -5,6 +5,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+import team.delete.scheduling_system.dto.LeaveRecordDto;
 import team.delete.scheduling_system.entity.LeaveRecord;
 
 import java.time.LocalDate;
@@ -21,8 +22,8 @@ public class LeaveServiceTests {
     @Test
     public void testFetchAllLeaveRecord(){
         Integer userId=2;
-        List<LeaveRecord> leaveRecordList=leaveRecordService.fetchAllLeaveRecord(userId);
-        for (LeaveRecord leaveRecord : leaveRecordList) {
+        List<LeaveRecordDto> leaveRecordList=leaveRecordService.fetchAllLeaveRecord(userId);
+        for (LeaveRecordDto leaveRecord : leaveRecordList) {
             System.out.println(leaveRecord);
         }
     }
@@ -104,8 +105,8 @@ public class LeaveServiceTests {
     @Test
     public void testFetchAllReviewLeaveRecord(){
         Integer userId=7;
-        List<LeaveRecord> leaveRecordList=leaveRecordService.fetchAllReviewLeaveRecord(userId);
-        for (LeaveRecord leaveRecord : leaveRecordList) {
+        List<LeaveRecordDto> leaveRecordList=leaveRecordService.fetchAllReviewLeaveRecord(userId);
+        for (LeaveRecordDto leaveRecord : leaveRecordList) {
             System.out.println(leaveRecord);
         }
     }
