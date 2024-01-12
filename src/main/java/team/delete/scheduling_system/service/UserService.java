@@ -199,7 +199,7 @@ public class UserService {
     /**
      * 删除用户信息
      *
-     * @param userId 操作的用户id
+     * @param userId           操作的用户id
      * @param userIdNeedDelete 删除的用户对象id
      */
     public void deleteUser(Integer userId, Integer userIdNeedDelete) {
@@ -237,7 +237,7 @@ public class UserService {
     /**
      * 查询可换班对象
      *
-     * @param userId   操作的用户对象id
+     * @param userId 操作的用户对象id
      * @return 职位信息列表
      */
     public List<String> fetchUserShift(Integer userId) {
@@ -247,19 +247,18 @@ public class UserService {
         User user = userMapper.selectById(userId);
         if (user.getType() == User.Type.GROUP_MANAGER) {
             return userMapper.selectUserListByUserIdStoreIdAndGroupType(userId, user.getStoreId(), userMapper.selectGroupTypeByUserId(userId));
-        }
-        else if (user.getType() == User.Type.CASHIER || user.getType() == User.Type.STORAGE || user.getType() == User.Type.CUSTOMER_SERVICE) {
+        } else if (user.getType() == User.Type.CASHIER || user.getType() == User.Type.STORAGE || user.getType() == User.Type.CUSTOMER_SERVICE) {
             return userMapper.selectUserListByStoreIdAndUserType(user.getStoreId(), user.getType());
-        }
-        else{
+        } else {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
     }
 
+
     /**
      * 查询可换班对象
      *
-     * @param userId   操作的用户对象id
+     * @param userId 操作的用户对象id
      * @return 职位信息列表
      */
     public List<UserDto> fetchUserByGroup(Integer userId) {
@@ -271,5 +270,16 @@ public class UserService {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
         return userMapper.selectUserListByGroup(userId, user.getGroupId());
+    }
+
+    public List<List<String>> fetchAllUser(Integer userId) {
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+        return null;
     }
 }
