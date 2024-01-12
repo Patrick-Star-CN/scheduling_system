@@ -264,7 +264,36 @@ public class UserService {
         }
     }
 
+    /**
+     * 修改用户所属工种及组别
+     *
+     * @param userId     操作的用户id
+     * @param userUpdateId 更新的用户id
+     * @param professionType 更新的工种名称
+     * @param group_id 更新的组别id
+     */
 
+    public void updateUserByProfessionAndGroup(Integer userId, Integer userUpdateId, User.Type professionType, Integer group_id) {
+        if (userId == null || userUpdateId==null || professionType==null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user.getType() != User.Type.MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        if(professionType != User.Type.CASHIER && professionType != User.Type.STORAGE  && professionType != User.Type.CUSTOMER_SERVICE){
+            throw new AppException(ErrorCode.Profession_NOT_EXISTED);
+        }
+        User userUpdate = userMapper.selectById(userUpdateId);
+        if(userUpdate.getStoreId().equals(user.getStoreId())){
+            userUpdate.setType(professionType);
+            userUpdate.setGroupId(group_id);
+            userMapper.updateById(userUpdate);
+        }
+        else{
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+    }
 
 
     /**
@@ -321,6 +350,23 @@ public class UserService {
         }
         Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
         return userMapper.selectUserListByProfessionAndStoreId(profession.getType(), user.getStoreId());
+    }
+
+    /**
+     * 查询某店用户信息
+     *
+     * @param userId   操作的用户对象id
+     * @return 职位信息列表
+     */
+    public List<UserDto> fetchWorkerByStore(Integer userId){
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user.getType() != User.Type.MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        return userMapper.selectUserListByStore(user.getStoreId());
     }
 
     /**
