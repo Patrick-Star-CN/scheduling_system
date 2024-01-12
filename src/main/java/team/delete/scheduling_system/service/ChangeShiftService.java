@@ -359,6 +359,7 @@ public class ChangeShiftService {
         } else {
             changeRecord.setType(ChangeShiftRecord.Type.REJECT);
         }
+        changeShiftRecordMapper.updateById(changeRecord);
         if(result){
             Integer storeId=userMapper.selectUserByUserId(userId).getStoreId();
             Integer ManagerId = changeShiftRecordMapper.findStorageIdByStoreId(storeId);
