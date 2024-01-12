@@ -65,7 +65,7 @@ public class ChangeShiftServiceTests {
     }
     @Test
     public void testAddChangeShiftRecord(){
-        changeShiftService.addChangeShiftRecord(2,19,0,1,0,0);
+        changeShiftService.addChangeShiftRecord(19,2,0,1,0,0);
     }
     @Test
     public void testReviewChangeShiftRecordWithNull(){
