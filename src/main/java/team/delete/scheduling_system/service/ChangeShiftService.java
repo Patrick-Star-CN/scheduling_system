@@ -335,6 +335,13 @@ public class ChangeShiftService {
                 .eq("shift_id2", shiftId2));
         stringRedisTemplate.opsForList().leftPush(userId2 + "-change-shift", JSON.toJSONString(changeShiftRecord));
     }
+
+    /**
+     *  审核调班记录
+     * @param userId 被调班人
+     * @param recordId 调班id
+     * @param result 审核结果
+     */
     public void reviewLeaveRecord(Integer userId, Integer recordId, boolean result) {
         if (userId == null || recordId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
