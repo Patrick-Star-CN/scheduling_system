@@ -11,7 +11,7 @@ import team.delete.scheduling_system.service.GroupService;
 
 /**
  * @author Patrick_Star
- * @version 1.3
+ * @version 1.4
  */
 @Validated
 @RestController
@@ -98,5 +98,16 @@ public class GroupController {
     @GetMapping("/list")
     public Object findGroupListByStoreIdAndType(@RequestParam(value = "store_id") int storeId, @RequestParam(value = "type") User.Type type) {
         return AjaxResult.SUCCESS(groupService.fetchGroupListByTypeAndStoreId(StpUtil.getLoginIdAsInt(), type, storeId));
+    }
+
+    /**
+     * 查询某组别组长属于的某门店某工种的小组列表接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/employee")
+    public Object findGroupListByUserId() {
+        return AjaxResult.SUCCESS(groupService.fetchGroupListByUserId(StpUtil.getLoginIdAsInt()));
     }
 }

@@ -112,4 +112,15 @@ public class UserController {
     public Object fetchUserShift() {
         return AjaxResult.SUCCESS(userService.fetchUserShift(StpUtil.getLoginIdAsInt()));
     }
+
+    /**
+     * 查询某小组用户信息接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/group")
+    public Object fetchUserByGroup() {
+        return AjaxResult.SUCCESS(userService.fetchUserByGroup(StpUtil.getLoginIdAsInt()));
+    }
 }

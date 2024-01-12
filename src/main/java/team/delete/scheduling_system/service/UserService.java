@@ -255,4 +255,21 @@ public class UserService {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
     }
+
+    /**
+     * 查询可换班对象
+     *
+     * @param userId   操作的用户对象id
+     * @return 职位信息列表
+     */
+    public List<UserDto> fetchUserByGroup(Integer userId) {
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user.getType() != User.Type.GROUP_MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        return userMapper.selectUserListByGroup(userId, user.getGroupId());
+    }
 }
