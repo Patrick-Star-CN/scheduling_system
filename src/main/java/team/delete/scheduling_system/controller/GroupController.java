@@ -101,13 +101,25 @@ public class GroupController {
     }
 
     /**
-     * 查询某门店某工种的小组列表接口
+     * 查询某门店某工种的小组列表接口（副经理）
      *
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
     @GetMapping("/employee")
-    public Object findGroupListByUserId() {
+    public Object findGroupListByUserIdVice() {
         return AjaxResult.SUCCESS(groupService.fetchGroupListByUserId(StpUtil.getLoginIdAsInt()));
+    }
+
+    /**
+     * 查询某门店某工种的小组列表接口（经理）
+     * @param type 参数形式传入的工种
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/employee/{type}")
+    public Object findGroupListByUserId(@PathVariable(value = "type") String type) {
+        User.Type professionType = Enum.valueOf(User.Type.class, type);
+        return AjaxResult.SUCCESS(groupService.fetchGroupListByUserIdAndProfession(StpUtil.getLoginIdAsInt(), professionType));
     }
 }
