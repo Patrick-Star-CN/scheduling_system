@@ -36,7 +36,7 @@ public class GroupController {
     }
 
     /**
-     * 添加小组接口（经理）
+     * 添加组别接口（经理）
      *
      * @param managerId 参数形式传入的小组负责人id
      * @param type 参数形式传入的组别类型
@@ -50,7 +50,7 @@ public class GroupController {
         return AjaxResult.SUCCESS();
     }
     /**
-     * 查询所有工种接口
+     * 查询所有组别接口
      *
      * @return json数据，包含状态码和状态信息
      */
@@ -61,7 +61,7 @@ public class GroupController {
     }
 
     /**
-     * 修改工种接口
+     * 修改组别接口
      *
      * @param group 参数形式传入的工种对象
      * @return json数据，包含状态码和状态信息
@@ -74,7 +74,7 @@ public class GroupController {
     }
 
     /**
-     * 删除工种接口
+     * 删除组别接口
      *
      * @param id 参数形式传入的工种id
      * @return json数据，包含状态码和状态信息
@@ -88,7 +88,7 @@ public class GroupController {
 
 
     /**
-     * 查询店铺某一工种小组列表接口
+     * 查询门店某一工种小组列表接口
      *
      * @param storeId 参数形式传入的店铺id
      * @param type 参数形式传入的工种
