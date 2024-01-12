@@ -85,6 +85,7 @@ public class ShiftController {
                                @RequestParam(value = "week_id1") Integer weekId1, @RequestParam(value = "week_id2") Integer weekId2) {
         changeShiftService.changeShift(StpUtil.getLoginIdAsInt(), storeId, userId1, userId2, shiftId1, shiftId2, weekId1, weekId2);
         return AjaxResult.SUCCESS();
+    }
 
     /**
      * 查询客流数据接口

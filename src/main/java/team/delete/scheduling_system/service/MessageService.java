@@ -1,13 +1,16 @@
 package team.delete.scheduling_system.service;
 
+import com.alibaba.fastjson.JSON;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import team.delete.scheduling_system.constant.ErrorCode;
+import team.delete.scheduling_system.dto.MessageDto;
 import team.delete.scheduling_system.exception.AppException;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -31,7 +34,10 @@ public class MessageService {
         if (userId == null || message == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
-        stringRedisTemplate.opsForList().leftPush(userId + "msg", message);
+        MessageDto messageDto = MessageDto.builder()
+                .message(message)
+                .read(false).build();
+        stringRedisTemplate.opsForList().leftPush(userId + "msg", JSON.toJSONString(messageDto));
     }
 
     /**
@@ -40,10 +46,18 @@ public class MessageService {
      * @param userId 接收的用户id
      * @return 消息列表
      */
-    public List<String> getMessage(Integer userId) {
+    public List<MessageDto> getMessage(Integer userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
-        return stringRedisTemplate.opsForList().range(userId + "msg", 0, -1);
+        List<String> stringList = stringRedisTemplate.opsForList().range(userId + "msg", 0, -1);
+        if (stringList == null || stringList.isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<MessageDto> messageDtos = JSON.parseArray(stringList.toString(), MessageDto.class);
+        messageDtos.forEach(messageDto -> stringRedisTemplate.opsForList().remove(userId + "msg", 1, JSON.toJSONString(messageDto)));
+        messageDtos.forEach(messageDto -> messageDto.setRead(true));
+        messageDtos.forEach(messageDto -> stringRedisTemplate.opsForList().leftPush(userId + "msg", JSON.toJSONString(messageDto)));
+        return JSON.parseArray(stringList.toString(), MessageDto.class);
     }
 }
