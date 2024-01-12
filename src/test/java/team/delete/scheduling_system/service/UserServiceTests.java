@@ -105,4 +105,13 @@ public class UserServiceTests {
                 break;
         }
     }
+
+    @Test
+    public void testFetchUserByGroup() {
+        Integer userId = 5;
+        List<UserDto> userList = userService.fetchUserByGroup(userId);
+        userList.forEach(user -> {
+            assertEquals((Object)4, user.getGroupId());
+        });
+    }
 }

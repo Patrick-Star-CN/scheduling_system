@@ -17,7 +17,7 @@ import java.util.List;
 
 /**
  * @author cookie1551 Patrick_Star
- * @version 1.3
+ * @version 1.4
  */
 @Service
 @RequiredArgsConstructor
@@ -100,6 +100,26 @@ public class GroupService {
         }
         return groupMapper.selectGroupList(type, storeId);
     }
+
+
+    /**
+     * 查询某组别组长属于的某门店某工种的小组列表
+     *
+     * @param userId 操作的用户对象id
+     * @return 组别信息列表
+     */
+    public List<Group> fetchGroupListByUserId(Integer userId) {
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user.getType() != User.Type.GROUP_MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        Group group = groupMapper.selectGroupByManagerId(userId);
+        return groupMapper.selectGroupList(group.getType(), group.getStoreId());
+    }
+
 
     /**
      * 查询组别信息
