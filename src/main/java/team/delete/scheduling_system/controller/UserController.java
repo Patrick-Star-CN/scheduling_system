@@ -128,19 +128,13 @@ public class UserController {
         return AjaxResult.SUCCESS(userService.fetchUserByGroup(StpUtil.getLoginIdAsInt()));
     }
 
-<<<<<<< Updated upstream
 
     /**
      * 查询某工种用户信息接口
-=======
-    /**
-     * 查询所有用户基础信息接口
->>>>>>> Stashed changes
      *
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-<<<<<<< Updated upstream
     @GetMapping("/profession/worker")
     public Object fetchWorkerByProfession() {
         return AjaxResult.SUCCESS(userService.fetchWorkerByProfession(StpUtil.getLoginIdAsInt()));
@@ -171,7 +165,13 @@ public class UserController {
         return AjaxResult.SUCCESS();
     }
 
-=======
+
+    /**
+     * 查询所有用户基础信息接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
     @GetMapping("/list")
     public Object fetchUserList() {
         return AjaxResult.SUCCESS(userService.fetchAllUser(StpUtil.getLoginIdAsInt()));
@@ -183,5 +183,4 @@ public class UserController {
         userService.insertByExcel(StpUtil.getLoginIdAsInt(), FileUtil.convertToFile(file));
         return AjaxResult.SUCCESS();
     }
->>>>>>> Stashed changes
 }
