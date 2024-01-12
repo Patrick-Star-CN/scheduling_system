@@ -370,4 +370,16 @@ public class ChangeShiftService {
         }
         messageService.sendMessage(changeRecord.getRequestPersonId(), "您的换班申请已被审核");
     }
+
+    /**
+     * 获取换班请求
+     * @param userId 换班人id
+     * @return 换班的信息
+     */
+    public List<ChangeShiftRecord> SelectChangeShiftRecord(Integer userId) {
+        if(userId==null){
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        return changeShiftRecordMapper.selectList(new QueryWrapper<ChangeShiftRecord>().eq("reviewer_person_id", userId));
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import team.delete.scheduling_system.constant.ErrorCode;
+import team.delete.scheduling_system.entity.ChangeShiftRecord;
 import team.delete.scheduling_system.entity.RuleDetail;
 import team.delete.scheduling_system.entity.Schedule;
 import team.delete.scheduling_system.entity.ScheduleDetail;
@@ -105,5 +106,11 @@ public class ChangeShiftServiceTests {
             changeShiftService.reviewLeaveRecord(19,50,true);
         });
         assertEquals(ErrorCode.CHANGE_RECORD_NOT_EXISTED, exception.getCode());
+    }
+    @Test
+    public void testSelectChangeShiftRecord(){
+        for(ChangeShiftRecord record:changeShiftService.SelectChangeShiftRecord(2)){
+            System.out.println(record);
+        }
     }
 }

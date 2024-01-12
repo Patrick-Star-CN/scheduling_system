@@ -114,4 +114,9 @@ public class ShiftController {
         changeShiftService.reviewLeaveRecord(StpUtil.getLoginIdAsInt(), recordId, result);
         return AjaxResult.SUCCESS();
     }
+    @ResponseBody
+    @GetMapping("/change-shift-record")
+    public Object changeShiftWorker() {
+        return AjaxResult.SUCCESS( changeShiftService.SelectChangeShiftRecord(StpUtil.getLoginIdAsInt()));
+    }
 }

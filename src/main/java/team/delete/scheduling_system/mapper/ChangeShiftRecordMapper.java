@@ -6,6 +6,8 @@ import org.apache.ibatis.annotations.Select;
 import team.delete.scheduling_system.entity.ChangeShiftRecord;
 import team.delete.scheduling_system.entity.LeaveRecord;
 
+import java.util.List;
+
 /**
  * @author Devin100086
  * @version 1.0
