@@ -256,6 +256,7 @@ public class UserService {
         }
     }
 
+<<<<<<< Updated upstream
     /**
      * 查询可换班对象
      *
@@ -263,13 +264,23 @@ public class UserService {
      * @return 职位信息列表
      */
     public List<UserDto> fetchUserByGroup(Integer userId) {
+=======
+    public List<List<String>> fetchAllUser(Integer userId) {
+>>>>>>> Stashed changes
         if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         User user = userMapper.selectById(userId);
+<<<<<<< Updated upstream
         if (user.getType() != User.Type.GROUP_MANAGER) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
         return userMapper.selectUserListByGroup(userId, user.getGroupId());
+=======
+        if (user == null) {
+            throw new AppException(ErrorCode.USER_NOT_EXISTED);
+        }
+
+>>>>>>> Stashed changes
     }
 }
