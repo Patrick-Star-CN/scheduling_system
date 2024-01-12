@@ -19,6 +19,8 @@ import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.exception.AppException;
 import team.delete.scheduling_system.mapper.ProfessionMapper;
 import team.delete.scheduling_system.mapper.UserMapper;
+import team.delete.scheduling_system.mapper.GroupMapper;
+import team.delete.scheduling_system.entity.Group;
 
 import java.util.List;
 import java.util.regex.Pattern;
@@ -33,6 +35,7 @@ import java.util.regex.Pattern;
 @CacheConfig(cacheNames = "ExpireOneMin")
 public class UserService {
     final UserMapper userMapper;
+    final GroupMapper groupMapper;
     final ProfessionMapper professionMapper;
 
     /**
@@ -235,6 +238,36 @@ public class UserService {
 
 
     /**
+     * 修改用户所属组别
+     *
+     * @param userId     操作的用户id
+     * @param userUpdateId 更新的用户id
+     * @param group_id 更新的组别id
+     */
+    public void updateUserByGroup(Integer userId, Integer userUpdateId, Integer group_id) {
+        if (userId == null || userUpdateId==null || group_id==null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user.getType() != User.Type.VICE_MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        User userUpdate = userMapper.selectById(userUpdateId);
+        Group group = groupMapper.selectById(group_id);
+        Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
+        if(userUpdate.getType() == profession.getType()){
+            userUpdate.setGroupId(group_id);
+            userMapper.updateById(userUpdate);
+        }
+        else{
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+    }
+
+
+
+
+    /**
      * 查询可换班对象
      *
      * @param userId   操作的用户对象id
@@ -257,7 +290,7 @@ public class UserService {
     }
 
     /**
-     * 查询可换班对象
+     * 查询某组别用户信息
      *
      * @param userId   操作的用户对象id
      * @return 职位信息列表
@@ -271,5 +304,41 @@ public class UserService {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
         return userMapper.selectUserListByGroup(userId, user.getGroupId());
+    }
+
+    /**
+     * 查询某工种用户信息
+     *
+     * @param userId   操作的用户对象id
+     * @return 职位信息列表
+     */
+    public List<UserDto> fetchWorkerByProfession(Integer userId){
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user.getType() != User.Type.VICE_MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
+        return userMapper.selectUserListByProfessionAndStoreId(profession.getType(), user.getStoreId());
+    }
+
+    /**
+     * 查询某工种组长信息
+     *
+     * @param userId   操作的用户对象id
+     * @return 职位信息列表
+     */
+    public List<UserDto> fetchGroupManagerByProfession(Integer userId){
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user.getType() != User.Type.VICE_MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
+        return userMapper.selectGroupManagerListByProfessionAndStoreId(profession.getType(), user.getStoreId());
     }
 }

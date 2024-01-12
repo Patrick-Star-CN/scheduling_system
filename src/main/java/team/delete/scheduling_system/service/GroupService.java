@@ -103,7 +103,7 @@ public class GroupService {
 
 
     /**
-     * 查询某组别组长属于的某门店某工种的小组列表
+     * 查询某副经理管理的某门店某工种的小组列表
      *
      * @param userId 操作的用户对象id
      * @return 组别信息列表
@@ -113,11 +113,11 @@ public class GroupService {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         User user = userMapper.selectById(userId);
-        if (user.getType() != User.Type.GROUP_MANAGER) {
+        if (user.getType() != User.Type.VICE_MANAGER) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        Group group = groupMapper.selectGroupByManagerId(userId);
-        return groupMapper.selectGroupList(group.getType(), group.getStoreId());
+        Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
+        return groupMapper.selectGroupList(profession.getType(), user.getStoreId());
     }
 
 

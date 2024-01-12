@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import team.delete.scheduling_system.dto.AjaxResult;
 import team.delete.scheduling_system.dto.UserInsertDto;
+import team.delete.scheduling_system.entity.Group;
 import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.service.UserService;
 
@@ -114,7 +115,7 @@ public class UserController {
     }
 
     /**
-     * 查询某小组用户信息接口
+     * 查询某组别用户信息接口
      *
      * @return json数据，包含状态码和状态信息
      */
@@ -123,4 +124,42 @@ public class UserController {
     public Object fetchUserByGroup() {
         return AjaxResult.SUCCESS(userService.fetchUserByGroup(StpUtil.getLoginIdAsInt()));
     }
+
+
+    /**
+     * 查询某工种用户信息接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/profession/worker")
+    public Object fetchWorkerByProfession() {
+        return AjaxResult.SUCCESS(userService.fetchWorkerByProfession(StpUtil.getLoginIdAsInt()));
+    }
+
+    /**
+     * 查询某工种组长信息接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/profession/groupManager")
+    public Object fetchGroupManagerByProfession() {
+        return AjaxResult.SUCCESS(userService.fetchGroupManagerByProfession(StpUtil.getLoginIdAsInt()));
+    }
+
+    /**
+     * 修改用户所属组别接口
+     *
+     * @param user_id 参数形式传入的用户id
+     * @param group_id 参数形式传入的组别id
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @PutMapping("/group/{user_id}/{group_id}")
+    public Object updateUserByGroup(@PathVariable Integer user_id, @PathVariable Integer group_id) {
+        userService.updateUserByGroup(StpUtil.getLoginIdAsInt(), user_id, group_id);
+        return AjaxResult.SUCCESS();
+    }
+
 }
