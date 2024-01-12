@@ -12,15 +12,7 @@ import lombok.Data;
 @Data
 @Builder
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public class UserDto {
-    private Integer userId;
-    private String name;
-    private Integer storeId;
-    private String storeName;
-    private String storeAddress;
-    private Integer groupId;
-    private String groupName;
-    private String groupManagerName;
-    private String type;
-    private String managerName;
+public class MessageDto {
+    private String message;
+    private Boolean read;
 }
