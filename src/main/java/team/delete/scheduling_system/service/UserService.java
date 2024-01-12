@@ -302,7 +302,7 @@ public class UserService {
      * @param userId 操作的用户对象id
      * @return 职位信息列表
      */
-    public List<String> fetchUserShift(Integer userId) {
+    public List<UserDto> fetchUserShift(Integer userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
