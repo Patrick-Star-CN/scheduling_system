@@ -113,11 +113,15 @@ public class GroupService {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         User user = userMapper.selectById(userId);
-        if (user.getType() != User.Type.VICE_MANAGER) {
-            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        switch (user.getType()) {
+            case VICE_MANAGER:
+                Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
+                return groupMapper.selectGroupList(profession.getType(), user.getStoreId());
+            case MANAGER:
+                return groupMapper.selectGroupListByStoreIdM(user.getStoreId());
+            default :
+                throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
-        return groupMapper.selectGroupList(profession.getType(), user.getStoreId());
     }
 
 

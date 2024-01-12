@@ -59,4 +59,7 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("SELECT user_details_view.* FROM user_details_view,group_tb WHERE group_tb.type = #{type} AND user_details_view.store_id = #{storeId} AND group_tb.id = user_details_view.group_id AND user_details_view.type = 'GROUP_MANAGER';")
     List<UserDto> selectGroupManagerListByProfessionAndStoreId(User.Type type, Integer storeId);
+
+    @Select("SELECT * FROM user_details_view WHERE store_id = #{storeId} AND (type = 'CASHIER' OR type = 'STORAGE' OR type = 'CUSTOMER_SERVICE')")
+    List<UserDto> selectUserListByStore(Integer storeId);
 }

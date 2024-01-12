@@ -162,4 +162,31 @@ public class UserController {
         return AjaxResult.SUCCESS();
     }
 
+
+    /**
+     * 查询某店用户信息接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/store/worker")
+    public Object fetchWorkerByStore() {
+        return AjaxResult.SUCCESS(userService.fetchWorkerByStore(StpUtil.getLoginIdAsInt()));
+    }
+
+    /**
+     * 修改用户所属工种及组别接口
+     *
+     * @param user_id 参数形式传入的用户id
+     * @param profession 参数形式传入的工种名称
+     * @param group_id 参数形式传入的组别id
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @PutMapping("/profession/{user_id}/{profession}/{group_id}")
+    public Object updateUserByProfession(@PathVariable Integer user_id, @PathVariable String profession, @PathVariable Integer group_id) {
+        User.Type professionType = Enum.valueOf(User.Type.class, profession);
+        userService.updateUserByProfessionAndGroup(StpUtil.getLoginIdAsInt(), user_id, professionType, group_id);
+        return AjaxResult.SUCCESS();
+    }
 }
