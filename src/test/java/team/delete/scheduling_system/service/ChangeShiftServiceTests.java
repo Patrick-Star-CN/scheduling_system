@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import team.delete.scheduling_system.constant.ErrorCode;
+import team.delete.scheduling_system.entity.ChangeShiftRecord;
 import team.delete.scheduling_system.entity.RuleDetail;
 import team.delete.scheduling_system.entity.Schedule;
 import team.delete.scheduling_system.entity.ScheduleDetail;
@@ -62,5 +63,54 @@ public class ChangeShiftServiceTests {
             changeShiftService.changeShift(18, 1, 2, 5, 0, 0, 0, 0);
         });
         assertEquals(ErrorCode.USER_PERMISSION_ERROR, exception.getCode());
+    }
+    @Test
+    public void testAddChangeShiftRecord(){
+        changeShiftService.addChangeShiftRecord(19,2,0,1,0,0);
+    }
+    @Test
+    public void testReviewChangeShiftRecordWithNull(){
+        AppException exception = assertThrows(AppException.class, () -> {
+            changeShiftService.addChangeShiftRecord(null,19,0,1,0,0);
+        });
+        assertEquals(ErrorCode.PARAM_ERROR, exception.getCode());
+    }
+    @Test
+    public void testReviewChangeShiftRecordWithDifferentType(){
+        AppException exception = assertThrows(AppException.class, () -> {
+            changeShiftService.addChangeShiftRecord(19,5,0,1,0,0);
+        });
+        assertEquals(ErrorCode.USER_PERMISSION_ERROR, exception.getCode());
+    }
+    @Test
+    public void testReviewLeaveRecord(){
+        changeShiftService.reviewLeaveRecord(19,5,true);
+    }
+    @Test
+    public void testReviewLeaveRecordWithNull(){
+        AppException exception = assertThrows(AppException.class, () -> {
+            changeShiftService.reviewLeaveRecord(null,5,true);
+        });
+        assertEquals(ErrorCode.PARAM_ERROR, exception.getCode());
+    }
+    @Test
+    public void testReviewLeaveRecordWithNotExistsUser(){
+        AppException exception = assertThrows(AppException.class, () -> {
+            changeShiftService.reviewLeaveRecord(190,5,true);
+        });
+        assertEquals(ErrorCode.USER_NOT_EXISTED, exception.getCode());
+    }
+    @Test
+    public void testReviewLeaveRecordWithNotExistsRecord(){
+        AppException exception = assertThrows(AppException.class, () -> {
+            changeShiftService.reviewLeaveRecord(19,50,true);
+        });
+        assertEquals(ErrorCode.CHANGE_RECORD_NOT_EXISTED, exception.getCode());
+    }
+    @Test
+    public void testSelectChangeShiftRecord(){
+        for(ChangeShiftRecord record:changeShiftService.SelectChangeShiftRecord(2)){
+            System.out.println(record);
+        }
     }
 }

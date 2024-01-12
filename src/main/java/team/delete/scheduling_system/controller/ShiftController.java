@@ -77,14 +77,16 @@ public class ShiftController {
         customerFlowService.insertByExcel(StpUtil.getLoginIdAsInt(), FileUtil.convertToFile(file));
         return AjaxResult.SUCCESS();
     }
+
     @ResponseBody
     @PostMapping("/change-shift")
-    public  Object changeShift(@RequestParam(value = "store_id") Integer storeId,
-                               @RequestParam(value = "user_id1") Integer userId1, @RequestParam(value = "user_id2") Integer userId2,
-                               @RequestParam(value = "shift_id1") Integer shiftId1, @RequestParam(value = "shift_id2") Integer shiftId2,
-                               @RequestParam(value = "week_id1") Integer weekId1, @RequestParam(value = "week_id2") Integer weekId2) {
+    public Object changeShift(@RequestParam(value = "store_id") Integer storeId,
+                              @RequestParam(value = "user_id_change") Integer userId1, @RequestParam(value = "user_id_changed") Integer userId2,
+                              @RequestParam(value = "shift_id_change") Integer shiftId1, @RequestParam(value = "shift_id_changed") Integer shiftId2,
+                              @RequestParam(value = "week_id_change") Integer weekId1, @RequestParam(value = "week_id_changed") Integer weekId2) {
         changeShiftService.changeShift(StpUtil.getLoginIdAsInt(), storeId, userId1, userId2, shiftId1, shiftId2, weekId1, weekId2);
         return AjaxResult.SUCCESS();
+    }
 
     /**
      * 查询客流数据接口
@@ -95,5 +97,26 @@ public class ShiftController {
     @GetMapping("/customer-flow")
     public Object fetchCustomerFlow() {
         return AjaxResult.SUCCESS(customerFlowService.fetchAllCustomerFlow(StpUtil.getLoginIdAsInt()));
+    }
+
+    @ResponseBody
+    @PostMapping("/change-shift-worker")
+    public Object changeShiftWorker(@RequestParam(value = "user_id_changed") Integer userId2,
+                                    @RequestParam(value = "shift_id_change") Integer shiftId1, @RequestParam(value = "shift_id_changed") Integer shiftId2,
+                                    @RequestParam(value = "week_id_change") Integer weekId1, @RequestParam(value = "week_id_changed") Integer weekId2) {
+        changeShiftService.addChangeShiftRecord(StpUtil.getLoginIdAsInt(), userId2, shiftId1, shiftId2, weekId1, weekId2);
+        return AjaxResult.SUCCESS();
+    }
+
+    @ResponseBody
+    @PostMapping("/review-change-shift")
+    public Object changeShiftWorker(@RequestParam(value = "record_id") Integer recordId, @RequestParam(value = "result") Boolean result) {
+        changeShiftService.reviewLeaveRecord(StpUtil.getLoginIdAsInt(), recordId, result);
+        return AjaxResult.SUCCESS();
+    }
+    @ResponseBody
+    @GetMapping("/change-shift-record")
+    public Object changeShiftWorker() {
+        return AjaxResult.SUCCESS( changeShiftService.SelectChangeShiftRecord(StpUtil.getLoginIdAsInt()));
     }
 }
