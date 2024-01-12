@@ -2,9 +2,14 @@ package team.delete.scheduling_system.service;
 
 import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.system.UserInfo;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.read.listener.ReadListener;
+import com.alibaba.excel.util.ListUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -12,6 +17,8 @@ import org.springframework.transaction.annotation.Transactional;
 import team.delete.scheduling_system.constant.ErrorCode;
 import team.delete.scheduling_system.constant.RegexPattern;
 import team.delete.scheduling_system.dto.UserInsertDto;
+import team.delete.scheduling_system.dto.UserListDto;
+import team.delete.scheduling_system.entity.CustomerFlow;
 import team.delete.scheduling_system.entity.Profession;
 import team.delete.scheduling_system.dto.UserDto;
 import team.delete.scheduling_system.entity.Store;
@@ -22,6 +29,7 @@ import team.delete.scheduling_system.mapper.UserMapper;
 import team.delete.scheduling_system.mapper.GroupMapper;
 import team.delete.scheduling_system.entity.Group;
 
+import java.io.File;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -30,6 +38,7 @@ import java.util.regex.Pattern;
  * @version 1.6
  */
 @Service
+@Slf4j
 @RequiredArgsConstructor
 @Transactional(rollbackForClassName = "RuntimeException")
 @CacheConfig(cacheNames = "ExpireOneMin")
@@ -387,7 +396,7 @@ public class UserService {
         return userMapper.selectGroupManagerListByProfessionAndStoreId(profession.getType(), user.getStoreId());
     }
   
-    public List<List<String>> fetchAllUser(Integer userId) {
+    public List<UserListDto> fetchAllUser(Integer userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
@@ -395,6 +404,60 @@ public class UserService {
         if (user == null) {
             throw new AppException(ErrorCode.USER_NOT_EXISTED);
         }
-        return null;
+        return userMapper.selectUserListDto();
+    }
+
+    /**
+     * 通过解析excel文件插入数据
+     *
+     * @param userId 操作的用户对象id
+     * @param file   excel文件
+     */
+    public void insertByExcel(Integer userId, File file) {
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        if (user == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        if (user.getType() != User.Type.SUPER_ADMIN && user.getType() != User.Type.MANAGER) {
+            throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+        EasyExcel.read(file, CustomerFlow.class, new ReadListener<User>() {
+            /**
+             * 单次缓存的数据量
+             */
+            public static final int BATCH_COUNT = 100;
+            /**
+             * 临时存储
+             */
+            private List<User> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+
+            @Override
+            public void invoke(User data, AnalysisContext context) {
+                cachedDataList.add(data);
+                if (cachedDataList.size() >= BATCH_COUNT) {
+                    saveData();
+                    // 存储完成清理 list
+                    cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+                }
+            }
+
+            @Override
+            public void doAfterAllAnalysed(AnalysisContext context) {
+                saveData();
+            }
+
+            /**
+             * 加上存储数据库
+             */
+            private void saveData() {
+                log.info("{}条数据，开始存储数据库！", cachedDataList.size());
+                cachedDataList.forEach(userMapper::insert);
+                log.info("存储数据库成功！");
+            }
+        }).sheet().doRead();
+        file.delete();
     }
 }

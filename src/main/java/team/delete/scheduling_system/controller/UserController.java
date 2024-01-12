@@ -4,12 +4,15 @@ import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import team.delete.scheduling_system.dto.AjaxResult;
 import team.delete.scheduling_system.dto.UserInsertDto;
 import team.delete.scheduling_system.entity.Group;
 import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.service.UserService;
+import team.delete.scheduling_system.util.FileUtil;
 
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -163,6 +166,22 @@ public class UserController {
     }
 
 
+    /**
+     * 查询所有用户基础信息接口
+     *
+     * @return json数据，包含状态码和状态信息
+     */
+    @ResponseBody
+    @GetMapping("/list")
+    public Object fetchUserList() {
+        return AjaxResult.SUCCESS(userService.fetchAllUser(StpUtil.getLoginIdAsInt()));
+    }
+
+    @ResponseBody
+    @PostMapping("/multiple")
+    public Object multipleInsert(@RequestParam("file") MultipartFile file) throws IOException {
+        userService.insertByExcel(StpUtil.getLoginIdAsInt(), FileUtil.convertToFile(file));
+    }
     /**
      * 查询某店用户信息接口
      *

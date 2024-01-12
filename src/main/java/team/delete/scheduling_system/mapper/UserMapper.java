@@ -5,6 +5,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import team.delete.scheduling_system.dto.UserDto;
+import team.delete.scheduling_system.dto.UserListDto;
 import team.delete.scheduling_system.entity.Profession;
 import team.delete.scheduling_system.entity.User;
 
@@ -62,6 +63,8 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("SELECT user_details_view.* FROM user_details_view,group_tb WHERE group_tb.type = #{type} AND user_details_view.store_id = #{storeId} AND group_tb.id = user_details_view.group_id AND user_details_view.type = 'GROUP_MANAGER';")
     List<UserDto> selectGroupManagerListByProfessionAndStoreId(User.Type type, Integer storeId);
 
+    @Select("SELECT user_id, name FROM user;")
+    List<UserListDto> selectUserListDto();
     @Select("SELECT * FROM user_details_view WHERE store_id = #{storeId} AND (type = 'CASHIER' OR type = 'STORAGE' OR type = 'CUSTOMER_SERVICE')")
     List<UserDto> selectUserListByStore(Integer storeId);
 }
