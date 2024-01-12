@@ -154,14 +154,14 @@ public class UserController {
     /**
      * 修改用户所属组别接口
      *
-     * @param user_id 参数形式传入的用户id
-     * @param group_id 参数形式传入的组别id
+     * @param userId  参数形式传入的用户id
+     * @param groupId 参数形式传入的组别id
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
     @PutMapping("/group/{user_id}/{group_id}")
-    public Object updateUserByGroup(@PathVariable Integer user_id, @PathVariable Integer group_id) {
-        userService.updateUserByGroup(StpUtil.getLoginIdAsInt(), user_id, group_id);
+    public Object updateUserByGroup(@PathVariable(value = "user_id") Integer userId, @PathVariable(value = "group_id") Integer groupId) {
+        userService.updateUserByGroup(StpUtil.getLoginIdAsInt(), userId, groupId);
         return AjaxResult.SUCCESS();
     }
 
@@ -181,7 +181,9 @@ public class UserController {
     @PostMapping("/multiple")
     public Object multipleInsert(@RequestParam("file") MultipartFile file) throws IOException {
         userService.insertByExcel(StpUtil.getLoginIdAsInt(), FileUtil.convertToFile(file));
+        return AjaxResult.SUCCESS();
     }
+
     /**
      * 查询某店用户信息接口
      *
@@ -196,16 +198,18 @@ public class UserController {
     /**
      * 修改用户所属工种及组别接口
      *
-     * @param user_id 参数形式传入的用户id
+     * @param userId    参数形式传入的用户id
      * @param profession 参数形式传入的工种名称
-     * @param group_id 参数形式传入的组别id
+     * @param groupId   参数形式传入的组别id
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
     @PutMapping("/profession/{user_id}/{profession}/{group_id}")
-    public Object updateUserByProfession(@PathVariable Integer user_id, @PathVariable String profession, @PathVariable Integer group_id) {
+    public Object updateUserByProfession(@PathVariable(value = "user_id") Integer userId,
+                                         @PathVariable String profession,
+                                         @PathVariable(value = "group_id") Integer groupId) {
         User.Type professionType = Enum.valueOf(User.Type.class, profession);
-        userService.updateUserByProfessionAndGroup(StpUtil.getLoginIdAsInt(), user_id, professionType, group_id);
+        userService.updateUserByProfessionAndGroup(StpUtil.getLoginIdAsInt(), userId, professionType, groupId);
         return AjaxResult.SUCCESS();
     }
 }

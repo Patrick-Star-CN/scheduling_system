@@ -10,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.UpdateWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.ibatis.annotations.Mapper;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -249,12 +250,12 @@ public class UserService {
     /**
      * 修改用户所属组别
      *
-     * @param userId     操作的用户id
+     * @param userId       操作的用户id
      * @param userUpdateId 更新的用户id
-     * @param group_id 更新的组别id
+     * @param group_id     更新的组别id
      */
     public void updateUserByGroup(Integer userId, Integer userUpdateId, Integer group_id) {
-        if (userId == null || userUpdateId==null || group_id==null) {
+        if (userId == null || userUpdateId == null || group_id == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         User user = userMapper.selectById(userId);
@@ -264,11 +265,10 @@ public class UserService {
         User userUpdate = userMapper.selectById(userUpdateId);
         Group group = groupMapper.selectById(group_id);
         Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
-        if(userUpdate.getType() == profession.getType()){
+        if (userUpdate.getType() == profession.getType()) {
             userUpdate.setGroupId(group_id);
             userMapper.updateById(userUpdate);
-        }
-        else{
+        } else {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
     }
@@ -276,30 +276,29 @@ public class UserService {
     /**
      * 修改用户所属工种及组别
      *
-     * @param userId     操作的用户id
-     * @param userUpdateId 更新的用户id
+     * @param userId         操作的用户id
+     * @param userUpdateId   更新的用户id
      * @param professionType 更新的工种名称
-     * @param group_id 更新的组别id
+     * @param group_id       更新的组别id
      */
 
     public void updateUserByProfessionAndGroup(Integer userId, Integer userUpdateId, User.Type professionType, Integer group_id) {
-        if (userId == null || userUpdateId==null || professionType==null) {
+        if (userId == null || userUpdateId == null || professionType == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
         User user = userMapper.selectById(userId);
         if (user.getType() != User.Type.MANAGER) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        if(professionType != User.Type.CASHIER && professionType != User.Type.STORAGE  && professionType != User.Type.CUSTOMER_SERVICE){
+        if (professionType != User.Type.CASHIER && professionType != User.Type.STORAGE && professionType != User.Type.CUSTOMER_SERVICE) {
             throw new AppException(ErrorCode.Profession_NOT_EXISTED);
         }
         User userUpdate = userMapper.selectById(userUpdateId);
-        if(userUpdate.getStoreId().equals(user.getStoreId())){
+        if (userUpdate.getStoreId().equals(user.getStoreId())) {
             userUpdate.setType(professionType);
             userUpdate.setGroupId(group_id);
             userMapper.updateById(userUpdate);
-        }
-        else{
+        } else {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
     }
@@ -346,10 +345,10 @@ public class UserService {
     /**
      * 查询某工种用户信息
      *
-     * @param userId   操作的用户对象id
+     * @param userId 操作的用户对象id
      * @return 职位信息列表
      */
-    public List<UserDto> fetchWorkerByProfession(Integer userId){
+    public List<UserDto> fetchWorkerByProfession(Integer userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
@@ -364,10 +363,10 @@ public class UserService {
     /**
      * 查询某店用户信息
      *
-     * @param userId   操作的用户对象id
+     * @param userId 操作的用户对象id
      * @return 职位信息列表
      */
-    public List<UserDto> fetchWorkerByStore(Integer userId){
+    public List<UserDto> fetchWorkerByStore(Integer userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
@@ -381,10 +380,10 @@ public class UserService {
     /**
      * 查询某工种组长信息
      *
-     * @param userId   操作的用户对象id
+     * @param userId 操作的用户对象id
      * @return 职位信息列表
      */
-    public List<UserDto> fetchGroupManagerByProfession(Integer userId){
+    public List<UserDto> fetchGroupManagerByProfession(Integer userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
@@ -395,7 +394,7 @@ public class UserService {
         Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
         return userMapper.selectGroupManagerListByProfessionAndStoreId(profession.getType(), user.getStoreId());
     }
-  
+
     public List<UserListDto> fetchAllUser(Integer userId) {
         if (userId == null) {
             throw new AppException(ErrorCode.PARAM_ERROR);
@@ -424,7 +423,7 @@ public class UserService {
         if (user.getType() != User.Type.SUPER_ADMIN && user.getType() != User.Type.MANAGER) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-        EasyExcel.read(file, CustomerFlow.class, new ReadListener<User>() {
+        EasyExcel.read(file, UserInsertDto.class, new ReadListener<UserInsertDto>() {
             /**
              * 单次缓存的数据量
              */
@@ -432,10 +431,10 @@ public class UserService {
             /**
              * 临时存储
              */
-            private List<User> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
+            private List<UserInsertDto> cachedDataList = ListUtils.newArrayListWithExpectedSize(BATCH_COUNT);
 
             @Override
-            public void invoke(User data, AnalysisContext context) {
+            public void invoke(UserInsertDto data, AnalysisContext context) {
                 cachedDataList.add(data);
                 if (cachedDataList.size() >= BATCH_COUNT) {
                     saveData();
@@ -454,7 +453,13 @@ public class UserService {
              */
             private void saveData() {
                 log.info("{}条数据，开始存储数据库！", cachedDataList.size());
-                cachedDataList.forEach(userMapper::insert);
+                cachedDataList.forEach(userInsertDto -> {
+                    userMapper.insert(User.builder().name(userInsertDto.getName())
+                            .groupId(userInsertDto.getGroupId())
+                            .storeId(userInsertDto.getStoreId())
+                            .password(userInsertDto.getName() + "123")
+                            .type(userInsertDto.getType()).build());
+                });
                 log.info("存储数据库成功！");
             }
         }).sheet().doRead();

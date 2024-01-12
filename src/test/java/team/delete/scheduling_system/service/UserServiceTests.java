@@ -11,6 +11,7 @@ import team.delete.scheduling_system.dto.UserInsertDto;
 import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.exception.AppException;
 
+import java.io.File;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -27,12 +28,7 @@ public class UserServiceTests {
 
     @Test
     public void testAddUser() {
-        userService.addUser(1,
-                UserInsertDto.builder()
-                        .name("test")
-                        .storeId(1)
-                        .groupId(1)
-                        .type(User.Type.CASHIER).build());
+        userService.addUser(1, null);
     }
 
     @Test
@@ -113,5 +109,10 @@ public class UserServiceTests {
         userList.forEach(user -> {
             assertEquals((Object)4, user.getGroupId());
         });
+    }
+
+    @Test
+    public void testAddCustomerFlow() {
+        userService.insertByExcel(1, new File("src/test/resources/用户数据.xlsx") );
     }
 }
