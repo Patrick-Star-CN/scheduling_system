@@ -148,7 +148,13 @@ public enum ErrorCode {
     /**
      * 该时间段只有一名员工，无法请假
      */
-    USER_CAN_NOT_LEAVE(200319, "该时间段只有一名员工，无法请假");
+    USER_CAN_NOT_LEAVE(200319, "该时间段只有一名员工，无法请假"),
+
+    /**
+     * 换班信息不存在
+     */
+    CHANGE_RECORD_NOT_EXISTED(200320, "换班记录不存在");
+
     private final Integer code;
     private final String message;
 
