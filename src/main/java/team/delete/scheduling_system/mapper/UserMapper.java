@@ -53,10 +53,6 @@ public interface UserMapper extends BaseMapper<User> {
     @Select("SELECT user.name FROM user WHERE user.store_id = #{storeId} AND user.type = #{type}")
     List<String> selectUserListByStoreIdAndUserType(Integer storeId, User.Type type);
 
-<<<<<<< Updated upstream
     @Select("SELECT * FROM user_details_view u WHERE u.group_id = #{groupId} AND u.user_id != #{userId};")
     List<UserDto> selectUserListByGroup(Integer userId, Integer groupId);
-=======
-
->>>>>>> Stashed changes
 }
