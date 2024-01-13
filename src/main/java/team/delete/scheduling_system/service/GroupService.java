@@ -1,5 +1,6 @@
 package team.delete.scheduling_system.service;
 
+import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
@@ -103,7 +104,7 @@ public class GroupService {
 
 
     /**
-     * 查询某副经理管理的某门店某工种的小组列表
+     * 查询某门店某工种的小组列表接口（副经理）
      *
      * @param userId 操作的用户对象id
      * @return 组别信息列表
@@ -117,13 +118,30 @@ public class GroupService {
             case VICE_MANAGER:
                 Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
                 return groupMapper.selectGroupList(profession.getType(), user.getStoreId());
-            case MANAGER:
-                return groupMapper.selectGroupListByStoreIdM(user.getStoreId());
             default :
                 throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
     }
 
+    /**
+     * 查询某门店某工种的小组列表接口（经理）
+     *
+     * @param userId 操作的用户对象id
+     * @param professionType 查询的工种
+     * @return 组别信息列表
+     */
+    public List<Group> fetchGroupListByUserIdAndProfession(Integer userId, User.Type professionType) {
+        if (userId == null) {
+            throw new AppException(ErrorCode.PARAM_ERROR);
+        }
+        User user = userMapper.selectById(userId);
+        switch (user.getType()) {
+            case MANAGER:
+                return groupMapper.selectGroupList(professionType, user.getStoreId());
+            default :
+                throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
+        }
+    }
 
     /**
      * 查询组别信息
