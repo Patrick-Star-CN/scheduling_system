@@ -182,6 +182,11 @@ public class GroupService {
                 .name(name)
                 .type(profession.getType()).build();
         groupMapper.insert(groupAdd);
+
+        if(manager.getType() == User.Type.GROUP_MANAGER) {
+            manager.setGroupId(groupAdd.getId());
+            userMapper.updateById(manager);
+        }
     }
 
     /**
@@ -221,6 +226,11 @@ public class GroupService {
                 .name(name)
                 .type(type).build();
         groupMapper.insert(groupAdd);
+
+        if(manager.getType() == User.Type.GROUP_MANAGER) {
+            manager.setGroupId(groupAdd.getId());
+            userMapper.updateById(manager);
+        }
     }
     private void checkParameter(Integer userId, Group groupAdd) {
         if (userId == null || groupAdd == null) {
@@ -252,7 +262,16 @@ public class GroupService {
      */
     public void deleteGroup(Integer userId, Integer groupIdNeedDelete) {
         judgePermission(userId, groupIdNeedDelete);
+        Group group = groupMapper.selectById(groupIdNeedDelete);
+        Integer userDeleteId = group.getManagerId();
+        User user = userMapper.selectById(userDeleteId);
+
         groupMapper.deleteById(groupIdNeedDelete);
+
+        if(user.getType() == User.Type.GROUP_MANAGER) {
+            user.setGroupId(null);
+            userMapper.updateById(user);
+        }
     }
 
     /**
@@ -270,6 +289,21 @@ public class GroupService {
         if((manager.getType() != User.Type.GROUP_MANAGER || groupUpdate.getType() == User.Type.MANAGER) && (manager.getType() != User.Type.MANAGER || groupUpdate.getType() != User.Type.MANAGER)) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
+
+        Group group = groupMapper.selectById(groupUpdate.getId());
+        Integer userDeleteId = group.getManagerId();
+        User user = userMapper.selectById(userDeleteId);
+
         groupMapper.updateById(groupUpdate);
+
+        if(manager.getType() == User.Type.GROUP_MANAGER) {
+            manager.setGroupId(groupUpdate.getId());
+            userMapper.updateById(manager);
+        }
+        if(user.getType() == User.Type.GROUP_MANAGER) {
+            user.setGroupId(null);
+            userMapper.updateById(user);
+        }
+
     }
 }

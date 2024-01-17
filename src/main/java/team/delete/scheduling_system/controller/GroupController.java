@@ -29,8 +29,8 @@ public class GroupController {
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-    @PostMapping("/{manager_id}/{name}")
-    public Object addGroupVice(@PathVariable("manager_id") Integer managerId, @PathVariable("name") String name) {
+    @PostMapping("/vice")
+    public Object addGroupVice(@RequestParam("manager_id") Integer managerId, @RequestParam("name") String name) {
         groupService.addGroupVice(StpUtil.getLoginIdAsInt(), managerId, name);
         return AjaxResult.SUCCESS();
     }
@@ -44,8 +44,8 @@ public class GroupController {
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-    @PostMapping("/{manager_id}/{name}/{type}")
-    public Object addGroup(@PathVariable("manager_id") Integer managerId, @PathVariable("name") String name, @PathVariable("type") String type) {
+    @PostMapping("/manager")
+    public Object addGroup(@RequestParam("manager_id") Integer managerId, @RequestParam("name") String name, @RequestParam("type") String type) {
         groupService.addGroup(StpUtil.getLoginIdAsInt(), managerId, Enum.valueOf(User.Type.class, type), name);
         return AjaxResult.SUCCESS();
     }
