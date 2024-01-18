@@ -4,15 +4,11 @@ import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import team.delete.scheduling_system.dto.AjaxResult;
 import team.delete.scheduling_system.dto.UserInsertDto;
-import team.delete.scheduling_system.entity.Group;
 import team.delete.scheduling_system.entity.User;
 import team.delete.scheduling_system.service.UserService;
-import team.delete.scheduling_system.util.FileUtil;
 
-import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -115,101 +111,5 @@ public class UserController {
     @GetMapping("/shift")
     public Object fetchUserShift() {
         return AjaxResult.SUCCESS(userService.fetchUserShift(StpUtil.getLoginIdAsInt()));
-    }
-
-    /**
-     * 查询某组别用户信息接口
-     *
-     * @return json数据，包含状态码和状态信息
-     */
-    @ResponseBody
-    @GetMapping("/group")
-    public Object fetchUserByGroup() {
-        return AjaxResult.SUCCESS(userService.fetchUserByGroup(StpUtil.getLoginIdAsInt()));
-    }
-
-
-    /**
-     * 查询某工种用户信息接口
-     *
-     * @return json数据，包含状态码和状态信息
-     */
-    @ResponseBody
-    @GetMapping("/profession/worker")
-    public Object fetchWorkerByProfession() {
-        return AjaxResult.SUCCESS(userService.fetchWorkerByProfession(StpUtil.getLoginIdAsInt()));
-    }
-
-    /**
-     * 查询某工种组长信息接口
-     *
-     * @return json数据，包含状态码和状态信息
-     */
-    @ResponseBody
-    @GetMapping("/profession/groupManager")
-    public Object fetchGroupManagerByProfession() {
-        return AjaxResult.SUCCESS(userService.fetchGroupManagerByProfession(StpUtil.getLoginIdAsInt()));
-    }
-
-    /**
-     * 修改用户所属组别接口
-     *
-     * @param userId  参数形式传入的用户id
-     * @param groupId 参数形式传入的组别id
-     * @return json数据，包含状态码和状态信息
-     */
-    @ResponseBody
-    @PutMapping("/group/{user_id}/{group_id}")
-    public Object updateUserByGroup(@PathVariable(value = "user_id") Integer userId, @PathVariable(value = "group_id") Integer groupId) {
-        userService.updateUserByGroup(StpUtil.getLoginIdAsInt(), userId, groupId);
-        return AjaxResult.SUCCESS();
-    }
-
-
-    /**
-     * 查询所有用户基础信息接口
-     *
-     * @return json数据，包含状态码和状态信息
-     */
-    @ResponseBody
-    @GetMapping("/list")
-    public Object fetchUserList() {
-        return AjaxResult.SUCCESS(userService.fetchAllUser(StpUtil.getLoginIdAsInt()));
-    }
-
-    @ResponseBody
-    @PostMapping("/multiple")
-    public Object multipleInsert(@RequestParam("file") MultipartFile file) throws IOException {
-        userService.insertByExcel(StpUtil.getLoginIdAsInt(), FileUtil.convertToFile(file));
-        return AjaxResult.SUCCESS();
-    }
-
-    /**
-     * 查询某店用户信息接口
-     *
-     * @return json数据，包含状态码和状态信息
-     */
-    @ResponseBody
-    @GetMapping("/store/worker")
-    public Object fetchWorkerByStore() {
-        return AjaxResult.SUCCESS(userService.fetchWorkerByStore(StpUtil.getLoginIdAsInt()));
-    }
-
-    /**
-     * 修改用户所属工种及组别接口
-     *
-     * @param userId    参数形式传入的用户id
-     * @param profession 参数形式传入的工种名称
-     * @param groupId   参数形式传入的组别id
-     * @return json数据，包含状态码和状态信息
-     */
-    @ResponseBody
-    @PutMapping("/profession/{user_id}/{profession}/{group_id}")
-    public Object updateUserByProfession(@PathVariable(value = "user_id") Integer userId,
-                                         @PathVariable String profession,
-                                         @PathVariable(value = "group_id") Integer groupId) {
-        User.Type professionType = Enum.valueOf(User.Type.class, profession);
-        userService.updateUserByProfessionAndGroup(StpUtil.getLoginIdAsInt(), userId, professionType, groupId);
-        return AjaxResult.SUCCESS();
     }
 }

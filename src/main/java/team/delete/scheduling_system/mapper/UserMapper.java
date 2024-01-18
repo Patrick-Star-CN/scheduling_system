@@ -5,7 +5,6 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import team.delete.scheduling_system.dto.UserDto;
-import team.delete.scheduling_system.dto.UserListDto;
 import team.delete.scheduling_system.entity.Profession;
 import team.delete.scheduling_system.entity.User;
 
@@ -47,24 +46,8 @@ public interface UserMapper extends BaseMapper<User> {
 
     @Select("SELECT group_tb.type FROM user, group_tb WHERE user.user_id = #{userId} AND user.user_id = group_tb.manager_id")
     User.Type selectGroupTypeByUserId(Integer userId);
-
-    @Select("SELECT user_details_view.* FROM user_details_view, group_tb WHERE user_details_view.store_id = #{storeId} AND group_tb.type = #{type} AND user_details_view.type = 'GROUP_MANAGER' AND user_details_view.user_id = group_tb.manager_id AND user_details_view.user_id != #{userId}")
-    List<UserDto> selectUserListByUserIdStoreIdAndGroupType(Integer userId, Integer storeId, User.Type type);
-
-    @Select("SELECT user_details_view.* FROM user_details_view WHERE user_details_view.store_id = #{storeId} AND user_details_view.type = #{type} AND user_details_view.user_id != #{userId}")
-    List<UserDto> selectUserListByStoreIdAndUserType(Integer userId, Integer storeId, User.Type type);
-
-    @Select("SELECT * FROM user_details_view u WHERE u.group_id = #{groupId} AND u.user_id != #{userId};")
-    List<UserDto> selectUserListByGroup(Integer userId, Integer groupId);
-
-    @Select("SELECT * FROM user_details_view u WHERE u.type = #{type} AND u.store_id = #{storeId};")
-    List<UserDto> selectUserListByProfessionAndStoreId(User.Type type, Integer storeId);
-
-    @Select("SELECT user_details_view.* FROM user_details_view,group_tb WHERE group_tb.type = #{type} AND user_details_view.store_id = #{storeId} AND group_tb.id = user_details_view.group_id AND user_details_view.type = 'GROUP_MANAGER';")
-    List<UserDto> selectGroupManagerListByProfessionAndStoreId(User.Type type, Integer storeId);
-
-    @Select("SELECT user_id, name FROM user;")
-    List<UserListDto> selectUserListDto();
-    @Select("SELECT * FROM user_details_view WHERE store_id = #{storeId} AND (type = 'CASHIER' OR type = 'STORAGE' OR type = 'CUSTOMER_SERVICE')")
-    List<UserDto> selectUserListByStore(Integer storeId);
+    @Select("SELECT user.name FROM user, group_tb WHERE user.store_id = #{storeId} AND group_tb.type = #{type} AND user.user_id = group_tb.manager_id AND user.type = 'GROUP_MANAGER' AND user.user_id != #{userId}")
+    List<String> selectUserListByUserIdStoreIdAndGroupType(Integer userId, Integer storeId, User.Type type);
+    @Select("SELECT user.name FROM user WHERE user.store_id = #{storeId} AND user.type = #{type}")
+    List<String> selectUserListByStoreIdAndUserType(Integer storeId, User.Type type);
 }

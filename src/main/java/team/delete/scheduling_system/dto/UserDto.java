@@ -19,7 +19,6 @@ public class UserDto {
     private String storeName;
     private String storeAddress;
     private Integer groupId;
-    private String groupName;
     private String groupManagerName;
     private String type;
     private String managerName;

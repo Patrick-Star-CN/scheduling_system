@@ -1,6 +1,5 @@
 package team.delete.scheduling_system.service;
 
-import cn.dev33.satoken.stp.StpUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.stereotype.Service;
@@ -18,7 +17,7 @@ import java.util.List;
 
 /**
  * @author cookie1551 Patrick_Star
- * @version 1.4
+ * @version 1.3
  */
 @Service
 @RequiredArgsConstructor
@@ -102,47 +101,6 @@ public class GroupService {
         return groupMapper.selectGroupList(type, storeId);
     }
 
-
-    /**
-     * 查询某门店某工种的小组列表接口（副经理）
-     *
-     * @param userId 操作的用户对象id
-     * @return 组别信息列表
-     */
-    public List<Group> fetchGroupListByUserId(Integer userId) {
-        if (userId == null) {
-            throw new AppException(ErrorCode.PARAM_ERROR);
-        }
-        User user = userMapper.selectById(userId);
-        switch (user.getType()) {
-            case VICE_MANAGER:
-                Profession profession = professionMapper.selectProfessionByStoreIdAndManagerId(user.getStoreId(), userId);
-                return groupMapper.selectGroupList(profession.getType(), user.getStoreId());
-            default :
-                throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-        }
-    }
-
-    /**
-     * 查询某门店某工种的小组列表接口（经理）
-     *
-     * @param userId 操作的用户对象id
-     * @param professionType 查询的工种
-     * @return 组别信息列表
-     */
-    public List<Group> fetchGroupListByUserIdAndProfession(Integer userId, User.Type professionType) {
-        if (userId == null) {
-            throw new AppException(ErrorCode.PARAM_ERROR);
-        }
-        User user = userMapper.selectById(userId);
-        switch (user.getType()) {
-            case MANAGER:
-                return groupMapper.selectGroupList(professionType, user.getStoreId());
-            default :
-                throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
-        }
-    }
-
     /**
      * 查询组别信息
      *
@@ -182,11 +140,6 @@ public class GroupService {
                 .name(name)
                 .type(profession.getType()).build();
         groupMapper.insert(groupAdd);
-
-        if(manager.getType() == User.Type.GROUP_MANAGER) {
-            manager.setGroupId(groupAdd.getId());
-            userMapper.updateById(manager);
-        }
     }
 
     /**
@@ -226,11 +179,6 @@ public class GroupService {
                 .name(name)
                 .type(type).build();
         groupMapper.insert(groupAdd);
-
-        if(manager.getType() == User.Type.GROUP_MANAGER) {
-            manager.setGroupId(groupAdd.getId());
-            userMapper.updateById(manager);
-        }
     }
     private void checkParameter(Integer userId, Group groupAdd) {
         if (userId == null || groupAdd == null) {
@@ -262,16 +210,7 @@ public class GroupService {
      */
     public void deleteGroup(Integer userId, Integer groupIdNeedDelete) {
         judgePermission(userId, groupIdNeedDelete);
-        Group group = groupMapper.selectById(groupIdNeedDelete);
-        Integer userDeleteId = group.getManagerId();
-        User user = userMapper.selectById(userDeleteId);
-
         groupMapper.deleteById(groupIdNeedDelete);
-
-        if(user.getType() == User.Type.GROUP_MANAGER) {
-            user.setGroupId(null);
-            userMapper.updateById(user);
-        }
     }
 
     /**
@@ -289,21 +228,6 @@ public class GroupService {
         if((manager.getType() != User.Type.GROUP_MANAGER || groupUpdate.getType() == User.Type.MANAGER) && (manager.getType() != User.Type.MANAGER || groupUpdate.getType() != User.Type.MANAGER)) {
             throw new AppException(ErrorCode.USER_PERMISSION_ERROR);
         }
-
-        Group group = groupMapper.selectById(groupUpdate.getId());
-        Integer userDeleteId = group.getManagerId();
-        User user = userMapper.selectById(userDeleteId);
-
         groupMapper.updateById(groupUpdate);
-
-        if(manager.getType() == User.Type.GROUP_MANAGER) {
-            manager.setGroupId(groupUpdate.getId());
-            userMapper.updateById(manager);
-        }
-        if(user.getType() == User.Type.GROUP_MANAGER) {
-            user.setGroupId(null);
-            userMapper.updateById(user);
-        }
-
     }
 }

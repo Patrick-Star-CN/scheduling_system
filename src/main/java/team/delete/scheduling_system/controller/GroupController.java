@@ -11,7 +11,7 @@ import team.delete.scheduling_system.service.GroupService;
 
 /**
  * @author Patrick_Star
- * @version 1.4
+ * @version 1.3
  */
 @Validated
 @RestController
@@ -29,14 +29,14 @@ public class GroupController {
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-    @PostMapping("/vice")
-    public Object addGroupVice(@RequestParam("manager_id") Integer managerId, @RequestParam("name") String name) {
+    @PostMapping("/{manager_id}/{name}")
+    public Object addGroupVice(@PathVariable("manager_id") Integer managerId, @PathVariable("name") String name) {
         groupService.addGroupVice(StpUtil.getLoginIdAsInt(), managerId, name);
         return AjaxResult.SUCCESS();
     }
 
     /**
-     * 添加组别接口（经理）
+     * 添加小组接口（经理）
      *
      * @param managerId 参数形式传入的小组负责人id
      * @param type 参数形式传入的组别类型
@@ -44,13 +44,13 @@ public class GroupController {
      * @return json数据，包含状态码和状态信息
      */
     @ResponseBody
-    @PostMapping("/manager")
-    public Object addGroup(@RequestParam("manager_id") Integer managerId, @RequestParam("name") String name, @RequestParam("type") String type) {
+    @PostMapping("/{manager_id}/{name}/{type}")
+    public Object addGroup(@PathVariable("manager_id") Integer managerId, @PathVariable("name") String name, @PathVariable("type") String type) {
         groupService.addGroup(StpUtil.getLoginIdAsInt(), managerId, Enum.valueOf(User.Type.class, type), name);
         return AjaxResult.SUCCESS();
     }
     /**
-     * 查询所有组别接口
+     * 查询所有工种接口
      *
      * @return json数据，包含状态码和状态信息
      */
@@ -61,7 +61,7 @@ public class GroupController {
     }
 
     /**
-     * 修改组别接口
+     * 修改工种接口
      *
      * @param group 参数形式传入的工种对象
      * @return json数据，包含状态码和状态信息
@@ -74,7 +74,7 @@ public class GroupController {
     }
 
     /**
-     * 删除组别接口
+     * 删除工种接口
      *
      * @param id 参数形式传入的工种id
      * @return json数据，包含状态码和状态信息
@@ -88,7 +88,7 @@ public class GroupController {
 
 
     /**
-     * 查询门店某一工种小组列表接口
+     * 查询店铺某一工种小组列表接口
      *
      * @param storeId 参数形式传入的店铺id
      * @param type 参数形式传入的工种
@@ -98,28 +98,5 @@ public class GroupController {
     @GetMapping("/list")
     public Object findGroupListByStoreIdAndType(@RequestParam(value = "store_id") int storeId, @RequestParam(value = "type") User.Type type) {
         return AjaxResult.SUCCESS(groupService.fetchGroupListByTypeAndStoreId(StpUtil.getLoginIdAsInt(), type, storeId));
-    }
-
-    /**
-     * 查询某门店某工种的小组列表接口（副经理）
-     *
-     * @return json数据，包含状态码和状态信息
-     */
-    @ResponseBody
-    @GetMapping("/employee")
-    public Object findGroupListByUserIdVice() {
-        return AjaxResult.SUCCESS(groupService.fetchGroupListByUserId(StpUtil.getLoginIdAsInt()));
-    }
-
-    /**
-     * 查询某门店某工种的小组列表接口（经理）
-     * @param type 参数形式传入的工种
-     * @return json数据，包含状态码和状态信息
-     */
-    @ResponseBody
-    @GetMapping("/employee/{type}")
-    public Object findGroupListByUserId(@PathVariable(value = "type") String type) {
-        User.Type professionType = Enum.valueOf(User.Type.class, type);
-        return AjaxResult.SUCCESS(groupService.fetchGroupListByUserIdAndProfession(StpUtil.getLoginIdAsInt(), professionType));
     }
 }

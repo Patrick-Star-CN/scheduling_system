@@ -20,7 +20,4 @@ public interface GroupMapper extends BaseMapper<Group> {
 
     @Select("SELECT * FROM group_tb WHERE group_tb.store_id = #{storeId}")
     List<Group> selectGroupListByStoreId(Integer storeId);
-
-    @Select("SELECT * FROM group_tb WHERE group_tb.manager_id = #{managerId}")
-    Group selectGroupByManagerId(Integer managerId);
 }

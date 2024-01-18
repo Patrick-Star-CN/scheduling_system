@@ -35,7 +35,11 @@ public class ChangeShiftServiceTests {
 
     @Test
     public void testChangeShiftWithDifferentType() {
-        changeShiftService.changeShift(3, 1, 2, 13, 0, 0, 0, 6);
+        AppException exception = assertThrows(AppException.class, () -> {
+            changeShiftService.changeShift(3, 1, 2, 13, 0, 0, 0, 6);
+        });
+        assertEquals(ErrorCode.STORE_NOT_EXISTED, exception.getCode());
+
     }
 
     @Test
@@ -68,23 +72,38 @@ public class ChangeShiftServiceTests {
     public void testAddChangeShiftRecord(){
         changeShiftService.addChangeShiftRecord(19,2,0,1,0,0);
     }
+
     @Test
-    public void testReviewChangeShiftRecordWithNull(){
+    public void testAddChangeShiftRecordWithNull(){
         AppException exception = assertThrows(AppException.class, () -> {
-            changeShiftService.addChangeShiftRecord(null,19,0,1,0,0);
+            changeShiftService.addChangeShiftRecord(null,null,null,null,0,0);
         });
         assertEquals(ErrorCode.PARAM_ERROR, exception.getCode());
     }
     @Test
-    public void testReviewChangeShiftRecordWithDifferentType(){
+    public void testAddChangeShiftRecordWithDifferentType(){
         AppException exception = assertThrows(AppException.class, () -> {
             changeShiftService.addChangeShiftRecord(19,5,0,1,0,0);
         });
         assertEquals(ErrorCode.USER_PERMISSION_ERROR, exception.getCode());
     }
     @Test
+    public void testAddChangeShiftRecordWithNoExits(){
+        AppException exception = assertThrows(AppException.class, () -> {
+            changeShiftService.addChangeShiftRecord(19,2,2,0,0,0);
+        });
+        assertEquals(ErrorCode.STORE_NOT_EXISTED, exception.getCode());
+    }
+    @Test
     public void testReviewLeaveRecord(){
         changeShiftService.reviewLeaveRecord(19,5,true);
+    }
+    @Test
+    public void testReviewLeaveRecordWithAllNull(){
+        AppException exception = assertThrows(AppException.class, () -> {
+            changeShiftService.reviewLeaveRecord(null,null,true);
+        });
+        assertEquals(ErrorCode.PARAM_ERROR, exception.getCode());
     }
     @Test
     public void testReviewLeaveRecordWithNull(){
