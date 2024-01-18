@@ -381,6 +381,10 @@ public class ChangeShiftService {
         if(userId==null){
             throw new AppException(ErrorCode.PARAM_ERROR);
         }
-        return changeShiftRecordMapper.selectList(new QueryWrapper<ChangeShiftRecord>().eq("reviewer_person_id", userId));
+        List<String> recordList = stringRedisTemplate.opsForList().range(userId + "-change-shift", 0, -1);
+        if (recordList == null || recordList.isEmpty()) {
+            return changeShiftRecordMapper.selectList(new QueryWrapper<ChangeShiftRecord>().eq("reviewer_person_id", userId));
+        }
+        return JSON.parseArray(recordList.toString(), ChangeShiftRecord.class);
     }
 }
